@@ -14,9 +14,82 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(uuid())
-  email     String @unique
-  firstname String
-  lastname  String
-  password  String
+  id              String    @id @default(uuid())
+  email           String    @unique
+  firstname       String
+  lastname        String
+  password        String
+  bio             String?
+  profile_picture Bytes?
+  signed_up_at    DateTime  @default(now())
+  last_seen_at    DateTime?
+
+  friends          Friendship[]       @relation("UserAddedFriends")
+  addedBy          Friendship[]       @relation("UserIsFriendOf")
+  ChatParticipants ChatParticipants[]
+  sent_Messages    Messages[]
+  MessagesRead     MessageRead[]
+}
+
+model Friendship {
+  id     String @id @default(uuid())
+  user   User   @relation("UserAddedFriends", fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  friend   User   @relation("UserIsFriendOf", fields: [friendId], references: [id])
+  friendId String
+
+  created_at DateTime @default(now())
+
+  @@unique([userId, friendId])
+}
+
+model Chats {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+  is_group   Boolean
+  name       String?
+
+  participants ChatParticipants[]
+  Messages     Messages[]
+}
+
+model ChatParticipants {
+  id        String   @id @default(uuid())
+  chat      Chats    @relation(fields: [chatId], references: [id])
+  chatId    String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  joined_at DateTime @default(now())
+}
+
+model Messages {
+  id       String   @id @default(uuid())
+  chat     Chats    @relation(fields: [chatId], references: [id])
+  chatId   String
+  sender   User     @relation(fields: [senderId], references: [id])
+  senderId String
+  content  String
+  sent_at  DateTime @default(now())
+
+  MessageRead        MessageRead[]
+  MessageAttachments MessageAttachments[]
+}
+
+model MessageRead {
+  id        String   @id @default(uuid())
+  message   Messages @relation(fields: [messageId], references: [id])
+  messageId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model MessageAttachments {
+  id          String   @id @default(uuid())
+  message     Messages @relation(fields: [messageId], references: [id])
+  messageId   String
+  file_name   String?
+  file_type   String?
+  file_data   Bytes?
+  uploaded_at DateTime @default(now())
 }
