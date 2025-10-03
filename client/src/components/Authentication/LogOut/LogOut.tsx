@@ -1,7 +1,7 @@
 import { useAuth } from "../useAuth.jsx";
 import { useNavigate } from "react-router-dom";
 
-function LogOut() {
+function useLogOut() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
@@ -15,7 +15,7 @@ function LogOut() {
     navigate("/");
   };
 
-  return <button onClick={(e) => logOutHandler(e)}>Log Out</button>;
+  return logOutHandler;
 }
 
-export default LogOut;
+export default useLogOut;

@@ -82,6 +82,8 @@ async function userAlreadySignedUp(req: Request, res: Response) {
   try {
     const exists = await userExists(req.body.email);
 
+    console.log(exists);
+
     res.status(200).json({ exists });
   } catch (err) {
     if (err instanceof Error) {

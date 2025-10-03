@@ -1,18 +1,25 @@
 import { useAuth } from "./components//Authentication/useAuth.jsx";
-import LogOut from "./components/Authentication/LogOut/LogOut.jsx";
+import ScrollToTop from "./components/ScrollToTop.js";
+import NavBar from "./components/NavBar/NavBar.js";
+import style from "./App.module.css";
+import Footer from "./components/Footer/Footer.js";
+import { Outlet } from "react-router-dom";
 
 function App() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   if (loading) return <h1>Loading...</h1>;
 
   return (
     <>
-      <h1>{user?.email || "No user found"}</h1>
-      <p>
-        {user?.firstName} {user?.lastName}
-      </p>
-      <LogOut />
+      <ScrollToTop />
+      <div className={style.pageWrapper}>
+        <NavBar />
+        <div className={style.outletContent}>
+          <Outlet />
+        </div>
+        <Footer />
+      </div>
     </>
   );
 }

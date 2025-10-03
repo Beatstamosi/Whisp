@@ -1,0 +1,14 @@
+#root {
+  max-width: 1280px;
+}
+
+.pageWrapper {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.outletContent {
+  flex: 1;
+}

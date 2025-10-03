@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import style from "./Login.module.css";
 import { useAuth } from "../useAuth.tsx";
+import logo from "../../../assets/whisp_logo.png";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,12 +16,7 @@ function Login() {
   const emailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const emailInput = e.target;
     setEmail(emailInput.value);
-
-    if (emailInput.validity.valid) {
-      setEmailIsValid(true);
-    } else {
-      setEmailIsValid(false);
-    }
+    setEmailIsValid(emailInput.validity.valid);
   };
 
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,21 +27,16 @@ function Login() {
         `${import.meta.env.VITE_API_BASE_URL}/user/login`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({
-            email,
-            password,
-          }),
+          body: JSON.stringify({ email, password }),
         }
       );
       const data = await res.json();
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-        await fetchUser();
+        fetchUser();
         navigate("/");
       } else {
         setLoginFailed(true);
@@ -58,8 +49,12 @@ function Login() {
 
   return (
     <div className={style.pageWrapper}>
+      {/* Logo */}
+      <img src={logo} alt="Whisp Logo" className={style.logo} />
+
       <h1>Login</h1>
-      {loginFailed ? <p>Email or password is wrong</p> : null}
+      {loginFailed && <p>Email or password is wrong</p>}
+
       <form onSubmit={onFormSubmit}>
         <label htmlFor="email">E-Mail</label>
         {email && !emailIsValid && (
@@ -73,8 +68,9 @@ function Login() {
           placeholder="Enter E-Mail"
           type="email"
           value={email}
-          onChange={(e) => emailChange(e)}
+          onChange={emailChange}
         />
+
         <label htmlFor="password">Password</label>
         <input
           id="password"
@@ -84,6 +80,7 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
         <button
           type="submit"
           disabled={!emailIsValid || !password}
@@ -93,6 +90,7 @@ function Login() {
         >
           Log In
         </button>
+
         <p>
           If you do not have an account yet,{" "}
           <Link to="/sign-up">sign up here</Link>

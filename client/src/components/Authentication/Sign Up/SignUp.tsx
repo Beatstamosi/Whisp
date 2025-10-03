@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import style from "./SignUp.module.css";
 import { useNavigate } from "react-router-dom";
 import { useDebouncedCallback } from "use-debounce";
+import logo from "../../../assets/whisp_logo.png";
 
 function SignUp() {
   const [email, setEmail] = useState("");
@@ -143,8 +144,12 @@ function SignUp() {
         className={style.formContainer}
         aria-label="Sign up form"
       >
+        {/* Logo */}
+        <img src={logo} alt="Whisp Logo" className={style.logo} />
+
         <h1>Sign Up</h1>
 
+        {/* First Name */}
         <label htmlFor="firstName">First Name</label>
         <input
           id="firstName"
@@ -157,6 +162,7 @@ function SignUp() {
           required
         />
 
+        {/* Last Name */}
         <label htmlFor="lastName">Last Name</label>
         <input
           id="lastName"
@@ -169,6 +175,7 @@ function SignUp() {
           required
         />
 
+        {/* Email */}
         <label htmlFor="email">Email</label>
         {email && !emailIsValid && (
           <p id="emailWrong" className={style.emailWrongWarning} role="alert">
@@ -191,6 +198,7 @@ function SignUp() {
           required
         />
 
+        {/* Password */}
         <label htmlFor="password">Password</label>
         <input
           id="password"

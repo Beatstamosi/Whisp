@@ -1,0 +1,27 @@
+.containerNavBar {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-navbar-bg);
+}
+
+.logo {
+  width: 200px;
+  margin-top: 20px;
+}
+
+.containerLogo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  font-family: monospace;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    width: 100px;
+  }
+
+  .containerBtnLeaderboards {
+    padding-right: 10px;
+  }
+}

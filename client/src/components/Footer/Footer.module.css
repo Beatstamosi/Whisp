@@ -1,0 +1,26 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid var(--color-primary);
+  height: 50px;
+  width: 100%;
+}
+
+.link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: black;
+  transition: color 0.3s ease;
+}
+
+.icon {
+  transition: color 0.3s ease;
+}
+
+.link:hover,
+.icon:hover {
+  color: var(--color-primary);
+}
