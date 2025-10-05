@@ -4,6 +4,9 @@ import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 import { PiUploadSimple } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import useLogOut from "../Authentication/LogOut/LogOut";
+
+// ADD Delete Account button
 
 function EditProfile() {
   const { user } = useAuth();
@@ -11,6 +14,7 @@ function EditProfile() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
+  const logOutHandler = useLogOut();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -49,6 +53,39 @@ function EditProfile() {
       }
     } catch (err) {
       console.error("Error updating profile:", err);
+      navigate("/error");
+    }
+  };
+
+  const handleDeleteAccount = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    const deleteAcc = confirm("Are you sure you want to delete your Account?");
+
+    if (!deleteAcc) {
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/user/delete`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+        }
+      );
+
+      if (res.ok) {
+        logOutHandler(e);
+      }
+    } catch (err) {
+      console.error("Error deleting user: ", err);
+      navigate("/error");
     }
   };
 
@@ -98,6 +135,12 @@ function EditProfile() {
           onClick={(e) => handleSaveProfile(e)}
         >
           Save Profile
+        </button>
+        <button
+          className={style.btnDelete}
+          onClick={(e) => handleDeleteAccount(e)}
+        >
+          Delete Account
         </button>
         <button className={style.btnSecondary} onClick={() => navigate("/")}>
           Cancel

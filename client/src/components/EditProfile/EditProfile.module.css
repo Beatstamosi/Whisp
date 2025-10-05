@@ -120,15 +120,20 @@
   margin-top: 1rem;
 }
 
-.btnPrimary {
-  background-color: var(--color-primary);
-  color: var(--color-text-inverse);
+.btnPrimary,
+.btnSecondary,
+.btnDelete {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+}
+
+.btnPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
 }
 
 .btnPrimary:hover {
@@ -138,14 +143,19 @@
 .btnSecondary {
   background-color: var(--color-border);
   color: var(--color-text);
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
 .btnSecondary:hover {
   background-color: var(--color-text-light);
+}
+
+.btnDelete {
+  background-color: var(--color-accent-dark);
+  color: var(--color-text-inverse);
+}
+
+@media (max-width: 668px) {
+  .actionButtons {
+    flex-direction: column;
+  }
 }

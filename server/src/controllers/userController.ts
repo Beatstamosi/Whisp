@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
+import handleError from "../services/handleError.js";
 
 const updateUser = async (req: Request, res: Response) => {
   try {
@@ -15,10 +16,18 @@ const updateUser = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({ message: "User updated successfully" });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Error updating user" });
+  } catch (err) {
+    handleError(err, res);
   }
 };
 
-export { updateUser };
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    await prisma.user.delete({ where: { id: req.user?.id } });
+    res.status(201).json({ message: "User deleted successfully." });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export { updateUser, deleteUser };

@@ -131,7 +131,7 @@ a:hover {
 }
 
 /* Responsive tweaks */
-@media (max-width: 600px) {
+@media (max-width: 668px) {
   form {
     padding: 1.25rem;
     border-radius: 10px;
