@@ -1,13 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { FiMoreVertical } from "react-icons/fi";
-import { Link } from "react-router-dom";
 import useLogOut from "../Authentication/LogOut/LogOut";
 import styles from "./DropdownMenu.module.css";
+import { useNavigate } from "react-router-dom";
 
 export default function DropdownMenu({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const logOutHandler = useLogOut();
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -28,9 +29,15 @@ export default function DropdownMenu({ userId }: { userId: string }) {
 
       {open && (
         <div className={styles.dropdownMenu}>
-          <Link to={`/edit-profile/${userId}`} className={styles.dropdownItem}>
+          <button
+            className={styles.dropdownItem}
+            onClick={() => {
+              navigate(`/edit-profile/${userId}`);
+              setOpen(false);
+            }}
+          >
             Edit Profile
-          </Link>
+          </button>
           <button
             className={`${styles.dropdownItem} ${styles.logout}`}
             onClick={(e) => logOutHandler(e)}

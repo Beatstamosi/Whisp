@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import passport from "passport";
 import authRouter from "./routes/auth.js";
 import "./config/passport.js";
+import userRouter from "./routes/user.js";
 
 // Give access to environment variables
 dotenv.config();
@@ -31,8 +32,9 @@ if (process.env.NODE_ENV === "development") {
   );
 }
 
-// Authentication Route
-app.use("/user", authRouter);
+// Routes
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 // API route example
 app.get("/", (req, res) => res.render("index", { user: req.user }));

@@ -19,6 +19,7 @@ function NavBar() {
       <div>
         <DropdownMenu userId={user.id} />
       </div>
+      <hr />
     </div>
   );
 }

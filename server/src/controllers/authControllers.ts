@@ -64,13 +64,35 @@ const loginHandler = (req: Request, res: Response, next: NextFunction) => {
 function getUser(req: Request, res: Response) {
   if (req.user) {
     // Send limited user data (avoid sending password, etc.)
-    const { id, email, firstname, lastname } = req.user;
+    const {
+      id,
+      email,
+      firstname,
+      lastname,
+      bio,
+      profile_picture,
+      signed_up_at,
+      last_seen_at,
+    } = req.user;
+
+    let base64ProfilePicture = null;
+    if (profile_picture) {
+      const mimeType = "image/png"; // adjust if you store the type
+      base64ProfilePicture = Buffer.from(profile_picture).toString("base64");
+    }
+
     res.json({
       user: {
         id,
         email,
-        firstName: firstname,
-        lastName: lastname,
+        firstname,
+        lastname,
+        bio,
+        profile_picture: base64ProfilePicture
+          ? `data:image/png;base64,${base64ProfilePicture}`
+          : null,
+        signed_up_at: signed_up_at.toISOString(),
+        last_seen_at: last_seen_at ? last_seen_at.toISOString() : null,
       },
     });
   } else {

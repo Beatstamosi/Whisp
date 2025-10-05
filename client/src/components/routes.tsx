@@ -4,6 +4,7 @@ import Login from "./Authentication/Login/Login.jsx";
 import SignUp from "./Authentication/Sign Up/SignUp.jsx";
 import RequireAuth from "./Authentication/RequireAuth.jsx";
 import Home from "./Home/Home.js";
+import EditProfile from "./EditProfile/EditProfile.js";
 
 const routes = [
   {
@@ -18,6 +19,10 @@ const routes = [
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "edit-profile/:userId",
+        element: <EditProfile />,
       },
     ],
   },
