@@ -74,8 +74,12 @@ function ChatListPage() {
 
   // search bar
   const searchHandler = (value: string) => {
+    value = value.toLowerCase();
+
     if (activeView === "chats") {
-      const filteredChats = chats?.filter((chat) => chat.name.includes(value));
+      const filteredChats = chats?.filter((chat) =>
+        chat.name.toLowerCase().includes(value)
+      );
 
       if (filteredChats) {
         setDisplayChats(filteredChats);
@@ -85,7 +89,8 @@ function ChatListPage() {
     } else if (activeView === "user") {
       const filteredUsers = users?.filter(
         (user) =>
-          user.firstname.includes(value) || user.lastname.includes(value)
+          user.firstname.toLowerCase().includes(value) ||
+          user.lastname.toLowerCase().includes(value)
       );
 
       if (filteredUsers) {
