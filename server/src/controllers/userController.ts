@@ -30,4 +30,14 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export { updateUser, deleteUser };
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await prisma.user.findMany();
+
+    res.status(201).json({ users });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export { updateUser, deleteUser, getAllUsers };

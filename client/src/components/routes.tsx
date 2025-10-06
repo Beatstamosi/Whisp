@@ -5,6 +5,7 @@ import SignUp from "./Authentication/Sign Up/SignUp.jsx";
 import RequireAuth from "./Authentication/RequireAuth.jsx";
 import Home from "./Home/Home.js";
 import EditProfile from "./EditProfile/EditProfile.js";
+import ChatPage from "./ChatPage/ChatPage.js";
 
 const routes = [
   {
@@ -21,11 +22,16 @@ const routes = [
         element: <Home />,
       },
       {
+        path: "chat/:id",
+        element: <ChatPage />,
+      },
+      {
         path: "edit-profile/:userId",
         element: <EditProfile />,
       },
     ],
   },
+
   {
     path: "/login",
     element: <Login />,

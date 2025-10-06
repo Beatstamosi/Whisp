@@ -1,0 +1,5 @@
+.filterMenuWrapper {
+    display: flex;
+    width: 250px;
+    gap: 10px;
+}

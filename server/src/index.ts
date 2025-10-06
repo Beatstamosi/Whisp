@@ -7,6 +7,7 @@ import passport from "passport";
 import authRouter from "./routes/auth.js";
 import "./config/passport.js";
 import userRouter from "./routes/user.js";
+import chatRouter from "./routes/chats.js";
 
 // Give access to environment variables
 dotenv.config();
@@ -35,9 +36,7 @@ if (process.env.NODE_ENV === "development") {
 // Routes
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
-
-// API route example
-app.get("/", (req, res) => res.render("index", { user: req.user }));
+app.use("/chats", chatRouter);
 
 // Serve static files in production
 if (process.env.NODE_ENV === "production") {

@@ -2,3 +2,11 @@
   display: grid;
   grid-template-columns: 1fr 1.5fr;
 }
+
+.chatList {
+  grid-column: 1;
+}
+
+.chatPage {
+  grid-column: 2;
+}

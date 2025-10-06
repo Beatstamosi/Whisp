@@ -1,11 +1,27 @@
 import style from "./Home.module.css";
+import { Outlet, useLocation } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import ChatListPage from "../ChatListPage/ChatListPage";
 
 function Home() {
-  return <div className={style.homeWrapper}>Home</div>;
+  const isDesktop = useMediaQuery({ minWidth: 768 });
+  const location = useLocation();
+  const viewingChat = location.pathname.startsWith("/chat/");
 
-  // left side toggle between chats and friends
-    // friends tab has search bar to look for users
-  // right side chat window once opened with send message
+  if (isDesktop) {
+    return (
+      <div className={style.homeLayoutWrapper}>
+        <div className={style.chatList}>
+          <ChatListPage />
+        </div>
+        <div className={style.chatPage}>
+          <Outlet />
+        </div>
+      </div>
+    );
+  }
+
+  return <div>{viewingChat ? <Outlet /> : <ChatListPage />}</div>;
 }
 
 export default Home;
