@@ -101,8 +101,6 @@ function ChatListPage() {
     }
   };
 
-  console.log(users);
-
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>

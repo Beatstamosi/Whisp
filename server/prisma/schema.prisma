@@ -19,7 +19,7 @@ model User {
   firstname       String
   lastname        String
   password        String
-  bio             String?
+  bio             String    @default("Hi, I am using Whisp!")
   profile_picture Bytes?
   signed_up_at    DateTime  @default(now())
   last_seen_at    DateTime?
