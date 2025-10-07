@@ -34,7 +34,21 @@ const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await prisma.user.findMany();
 
-    res.status(201).json({ users });
+    const usersUpdated = users.map((user) => {
+      let profilePictureBase64 = null;
+
+      if (user.profile_picture) {
+        const base64 = Buffer.from(user.profile_picture).toString("base64");
+        profilePictureBase64 = `data:image/png;base64,${base64}`;
+      }
+
+      return {
+        ...user,
+        profile_picture: profilePictureBase64,
+      };
+    });
+
+    res.status(201).json({ users: usersUpdated });
   } catch (err) {
     handleError(err, res);
   }

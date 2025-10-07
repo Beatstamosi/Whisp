@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useLogOut from "../Authentication/LogOut/LogOut";
 
-// ADD Delete Account button
-
 function EditProfile() {
   const { user } = useAuth();
   const [bio, setBio] = useState<string>(user?.bio ?? "Hi, I am using Whisp!");

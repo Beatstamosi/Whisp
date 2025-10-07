@@ -2,6 +2,7 @@ import style from "./ChatListPage.module.css";
 import type { Chat } from "../types/Chats";
 import { useEffect, useState } from "react";
 import type { User } from "../types/User";
+import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 
 function ChatListPage() {
   const [chats, setChats] = useState<Chat[] | null>(null);
@@ -41,7 +42,6 @@ function ChatListPage() {
   }, [chats]);
 
   // get all users of plattform via useEffect; store in state
-  // TODO: IMPLEMENT BACKEND
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -101,32 +101,56 @@ function ChatListPage() {
     }
   };
 
-  return (
-    <div>
-      <div className={style.filterMenuWrapper}>
-        <button onClick={() => setActiveView("chats")}>Chats</button>
-        <button onClick={() => setActiveView("user")}>Users</button>
-      </div>
-      <div>
-        <input
-          type="search"
-          placeholder="Search by Name"
-          onChange={(e) => searchHandler(e.target.value)}
-        />
-      </div>
-      {activeView === "chats" &&
-        displayChats?.map((chat) => (
-          <div key={chat.id}>
-            <h2>{chat.name}</h2>
-          </div>
-        ))}
+  console.log(users);
 
-      {activeView === "user" &&
-        displayUsers?.map((user) => (
-          <div key={user.id}>
-            <h2>{user.firstname}</h2>
-          </div>
-        ))}
+  return (
+    <div className={style.chatListWrapper}>
+      <div className={style.filterMenuWrapper}>
+        <button
+          onClick={() => setActiveView("chats")}
+          className={activeView === "chats" ? style.active : ""}
+        >
+          Chats
+        </button>
+        <button
+          onClick={() => setActiveView("user")}
+          className={activeView === "user" ? style.active : ""}
+        >
+          Users
+        </button>
+      </div>
+
+      <input
+        type="search"
+        placeholder="Search by Name"
+        onChange={(e) => searchHandler(e.target.value)}
+      />
+
+      <div className={activeView === "chats" ? style.chatList : style.userList}>
+        {activeView === "chats" &&
+          displayChats?.map((chat) => (
+            <div key={chat.id} className={style.chatItem}>
+              <h2>{chat.name}</h2>
+            </div>
+          ))}
+
+        {activeView === "user" &&
+          displayUsers?.map((user) => (
+            <div key={user.id} className={style.userItem}>
+              <img
+                src={user.profile_picture || fallBackProfileImg}
+                alt={`${user.firstname} ${user.lastname}`}
+                className={style.avatar}
+              />
+              <div className={style.itemInfo}>
+                <h2>
+                  {user.firstname} {user.lastname}
+                </h2>
+                {user.bio && <p>{user.bio}</p>}
+              </div>
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

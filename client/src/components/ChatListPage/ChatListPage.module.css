@@ -1,5 +1,174 @@
+/* Layout Wrapper */
+.chatListWrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg);
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--color-text);
+}
+
+/* ----------------------------
+   Filter Menu (Chats / Users)
+   ---------------------------- */
 .filterMenuWrapper {
-    display: flex;
-    width: 250px;
-    gap: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.filterMenuWrapper button {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--color-text-light);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.filterMenuWrapper button:hover {
+  color: var(--color-primary);
+}
+
+.filterMenuWrapper button:focus,
+.filterMenuWrapper button.active {
+  color: var(--color-primary-dark);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/* ----------------------------
+   Search Bar
+   ---------------------------- */
+input[type="search"] {
+  width: 90%;
+  margin: 0.75rem auto;
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.95rem;
+  transition: all 0.2s ease-in-out;
+}
+
+input[type="search"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.15);
+}
+
+/* ----------------------------
+   Chat and User Items
+   ---------------------------- */
+.chatItem,
+.userItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.chatItem:hover,
+.userItem:hover {
+  background-color: var(--color-bg-alt);
+}
+
+/* ----------------------------
+   Avatar
+   ---------------------------- */
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-bg-alt);
+}
+
+/* ----------------------------
+   Text Section
+   ---------------------------- */
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.itemInfo h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemInfo p {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin: 0.25rem 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------------
+   Scrollable List
+   ---------------------------- */
+.chatList,
+.userList {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--color-bg);
+}
+
+/* Custom Scrollbar */
+.chatList::-webkit-scrollbar,
+.userList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatList::-webkit-scrollbar-thumb,
+.userList::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 3px;
+}
+
+.chatList::-webkit-scrollbar-thumb:hover,
+.userList::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-light);
+}
+
+/* ----------------------------
+   Responsive
+   ---------------------------- */
+@media (min-width: 768px) {
+  .chatListWrapper {
+    max-width: 420px;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+  }
 }
