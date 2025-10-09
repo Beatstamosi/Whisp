@@ -24,24 +24,9 @@ model User {
   signed_up_at    DateTime  @default(now())
   last_seen_at    DateTime?
 
-  friends          Friendship[]       @relation("UserAddedFriends")
-  addedBy          Friendship[]       @relation("UserIsFriendOf")
   ChatParticipants ChatParticipants[]
   sent_Messages    Messages[]
   MessagesRead     MessageRead[]
-}
-
-model Friendship {
-  id     String @id @default(uuid())
-  user   User   @relation("UserAddedFriends", fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-
-  friend   User   @relation("UserIsFriendOf", fields: [friendId], references: [id])
-  friendId String
-
-  created_at DateTime @default(now())
-
-  @@unique([userId, friendId])
 }
 
 model Chats {
