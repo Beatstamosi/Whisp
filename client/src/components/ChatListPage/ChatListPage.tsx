@@ -3,6 +3,15 @@ import type { Chat } from "../types/Chats";
 import { useEffect, useState } from "react";
 import type { User } from "../types/User";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
+import { useNavigate } from "react-router-dom";
+
+// TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
+// TODO: implement backend for fetching chats
+// TODO: implement click on user to start chat
+// check if chat exists (req.user.id + user.id)
+// --> return chat Id and navigate
+// otherwise create new chat with both as recipients
+// --> return chat id and navigate
 
 function ChatListPage() {
   const [chats, setChats] = useState<Chat[] | null>(null);
@@ -10,9 +19,9 @@ function ChatListPage() {
   const [displayChats, setDisplayChats] = useState<Chat[] | null>();
   const [displayUsers, setDisplayUsers] = useState<User[] | null>();
   const [activeView, setActiveView] = useState<"chats" | "user">("chats");
+  const navigate = useNavigate();
 
   // get all chats of user via useEffect; store in state
-  // TODO: IMPLEMENT BACKEND
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -70,8 +79,6 @@ function ChatListPage() {
     setDisplayUsers(users);
   }, [users]);
 
-  // TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
-
   // search bar
   const searchHandler = (value: string) => {
     value = value.toLowerCase();
@@ -101,6 +108,30 @@ function ChatListPage() {
     }
   };
 
+  const handleOpenChatWithUserClick = async (recipientId: string) => {
+    try {
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/chats/open-chat-user/${recipientId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      navigate(`/chat/${data.chatId}`);
+    } catch (err) {
+      console.error("Error opening chat with user ", err);
+      navigate("/error");
+    }
+  };
+
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>
@@ -127,14 +158,22 @@ function ChatListPage() {
       <div className={activeView === "chats" ? style.chatList : style.userList}>
         {activeView === "chats" &&
           displayChats?.map((chat) => (
-            <div key={chat.id} className={style.chatItem}>
+            <div
+              key={chat.id}
+              className={style.chatItem}
+              onClick={() => navigate(`/chat/${chat.id}`)}
+            >
               <h2>{chat.name}</h2>
             </div>
           ))}
 
         {activeView === "user" &&
           displayUsers?.map((user) => (
-            <div key={user.id} className={style.userItem}>
+            <div
+              key={user.id}
+              className={style.userItem}
+              onClick={() => handleOpenChatWithUserClick(user.id)}
+            >
               <img
                 src={user.profile_picture || fallBackProfileImg}
                 alt={`${user.firstname} ${user.lastname}`}

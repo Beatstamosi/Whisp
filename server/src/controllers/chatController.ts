@@ -26,4 +26,42 @@ const getAllChats = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllChats };
+const openChatWithUser = async (req: Request, res: Response) => {
+  const { recipientId } = req.params;
+  const openChatUserId = req.user?.id;
+
+  if (!openChatUserId) return;
+
+  try {
+    const existingChat = await prisma.chats.findFirst({
+      where: {
+        is_group: false,
+        participants: {
+          every: {
+            OR: [{ userId: recipientId }, { userId: openChatUserId }],
+          },
+        },
+      },
+      include: { participants: true },
+    });
+
+    if (existingChat) {
+      res.status(201).json({ chatId: existingChat.id });
+    } else {
+      const newChat = await prisma.chats.create({
+        data: {
+          is_group: false,
+          name: null,
+          participants: {
+            create: [{ userId: recipientId }, { userId: openChatUserId }],
+          },
+        },
+      });
+      res.status(201).json({ chatId: newChat.id });
+    }
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export { getAllChats, openChatWithUser };
