@@ -22,7 +22,7 @@ const routes = [
         element: <Home />,
       },
       {
-        path: "chat/:id",
+        path: "chat/:chatId",
         element: <ChatPage />,
       },
       {

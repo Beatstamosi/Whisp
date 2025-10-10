@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
 import type { Chats } from "@prisma/client";
+import { dummyChat } from "./chatDummyData.js";
 
 const getAllChats = async (req: Request, res: Response) => {
   const chats: Chats[] = [
@@ -64,4 +65,58 @@ const openChatWithUser = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllChats, openChatWithUser };
+const getSingleChat = async (req: Request, res: Response) => {
+  const { chatId } = req.params;
+
+  if (!chatId) return;
+
+  try {
+    const chat = await prisma.chats.findUnique({
+      where: { id: chatId },
+      include: {
+        participants: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+                profile_picture: true,
+              },
+            },
+          },
+        },
+        Messages: {
+          orderBy: { sent_at: "asc" },
+          include: {
+            sender: {
+              select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+              },
+            },
+            MessageRead: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstname: true,
+                    lastname: true,
+                  },
+                },
+              },
+            },
+            MessageAttachments: true,
+          },
+        },
+      },
+    });
+
+    res.status(201).json({ chat: dummyChat });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export { getAllChats, openChatWithUser, getSingleChat };
