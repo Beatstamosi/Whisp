@@ -54,7 +54,7 @@ const openChatWithUser = async (req: Request, res: Response) => {
           name: null,
           participants: {
             create:
-              recipientId === openChatUserId
+              recipientId !== openChatUserId
                 ? [{ userId: recipientId }, { userId: openChatUserId }]
                 : [{ userId: recipientId }],
           },

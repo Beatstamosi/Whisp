@@ -19,16 +19,15 @@ function ChatPage() {
   const navigate = useNavigate();
   let recipient: ChatParticipants | undefined;
 
-  if (!chat?.is_group && chat?.participants?.length === 1) {
-    recipient = chat.participants[0];
-  }
-
   if (!chat?.is_group && chat?.participants) {
-    recipient = chat.participants.find((p) => p.user?.id !== user?.id);
+    if (chat.participants.length === 1) {
+      // self-chat — only one participant
+      recipient = chat.participants[0];
+    } else {
+      // regular chat — find the *other* user
+      recipient = chat.participants.find((p) => p.user?.id !== user?.id);
+    }
   }
-
-  console.log(chat?.participants);
-  console.log(recipient);
 
   // Handle clicking outside of emoji picker to close it
   useEffect(() => {
