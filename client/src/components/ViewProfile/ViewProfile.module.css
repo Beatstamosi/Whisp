@@ -19,14 +19,14 @@
 
 .backButton {
   position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
+  top: 0rem;
+  left: -8rem;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
-  color: var(--color-text);
+  color: var(--color-primary);
   transition: background-color 0.2s ease;
 }
 

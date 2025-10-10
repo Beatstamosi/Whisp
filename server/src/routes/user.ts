@@ -4,6 +4,7 @@ import {
   deleteUser,
   updateUser,
   getAllUsers,
+  getSingleUser
 } from "../controllers/userController.js";
 import multer from "multer";
 
@@ -14,6 +15,7 @@ const upload = multer();
 userRouter.use(validateJWTToken);
 
 userRouter.get("/", getAllUsers);
+userRouter.get("/:userId", getSingleUser);
 userRouter.put("/update", upload.single("profile_picture"), updateUser);
 userRouter.delete("/delete", deleteUser);
 

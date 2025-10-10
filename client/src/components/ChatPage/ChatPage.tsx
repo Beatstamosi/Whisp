@@ -19,9 +19,16 @@ function ChatPage() {
   const navigate = useNavigate();
   let recipient: ChatParticipants | undefined;
 
+  if (!chat?.is_group && chat?.participants?.length === 1) {
+    recipient = chat.participants[0];
+  }
+
   if (!chat?.is_group && chat?.participants) {
     recipient = chat.participants.find((p) => p.user?.id !== user?.id);
   }
+
+  console.log(chat?.participants);
+  console.log(recipient);
 
   // Handle clicking outside of emoji picker to close it
   useEffect(() => {
@@ -78,18 +85,7 @@ function ChatPage() {
     if (userId) {
       navigate(`/profile/${userId}`);
     }
-  }; // Top bar with chat name / recipient name
-  // last online: last_seen_at;
-  // on click open profile of user
-  // on click open group chat overview
-
-  // messages
-  // if message.senderId === req.user.id mark as sender, else as receiver
-  // if no messages: Start conversation
-
-  // send message field
-  // textarea, emojis ?
-  // send message btn
+  };
 
   return (
     <div>

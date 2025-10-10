@@ -41,16 +41,17 @@ model Chats {
 
 model ChatParticipants {
   id        String   @id @default(uuid())
-  chat      Chats    @relation(fields: [chatId], references: [id])
   chatId    String
-  user      User     @relation(fields: [userId], references: [id])
   userId    String
   joined_at DateTime @default(now())
+
+  chat Chats @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id])
 }
 
 model Messages {
   id       String   @id @default(uuid())
-  chat     Chats    @relation(fields: [chatId], references: [id])
+  chat     Chats    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId   String
   sender   User     @relation(fields: [senderId], references: [id])
   senderId String
@@ -63,7 +64,7 @@ model Messages {
 
 model MessageRead {
   id        String   @id @default(uuid())
-  message   Messages @relation(fields: [messageId], references: [id])
+  message   Messages @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId String
   user      User     @relation(fields: [userId], references: [id])
   userId    String
@@ -71,7 +72,7 @@ model MessageRead {
 
 model MessageAttachments {
   id          String   @id @default(uuid())
-  message     Messages @relation(fields: [messageId], references: [id])
+  message     Messages @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId   String
   file_name   String?
   file_type   String?

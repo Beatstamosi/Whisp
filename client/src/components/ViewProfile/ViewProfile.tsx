@@ -27,8 +27,8 @@ function ViewProfile() {
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }
-        const userData = await response.json();
-        setUser(userData);
+        const data = await response.json();
+        setUser(data.user);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -65,8 +65,8 @@ function ViewProfile() {
           aria-label="Return to chat"
         >
           <svg
-            width="24"
-            height="24"
+            width="30"
+            height="30"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"

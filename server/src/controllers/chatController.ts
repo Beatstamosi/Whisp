@@ -53,7 +53,10 @@ const openChatWithUser = async (req: Request, res: Response) => {
           is_group: false,
           name: null,
           participants: {
-            create: [{ userId: recipientId }, { userId: openChatUserId }],
+            create:
+              recipientId === openChatUserId
+                ? [{ userId: recipientId }, { userId: openChatUserId }]
+                : [{ userId: recipientId }],
           },
         },
       });

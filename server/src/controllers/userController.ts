@@ -54,4 +54,33 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-export { updateUser, deleteUser, getAllUsers };
+const getSingleUser = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let profilePictureBase64 = null;
+
+    if (user.profile_picture) {
+      const base64 = Buffer.from(user.profile_picture).toString("base64");
+      profilePictureBase64 = `data:image/png;base64,${base64}`;
+    }
+    const userUpdated = {
+      ...user,
+      profile_picture: profilePictureBase64,
+    };
+
+    res.status(201).json({ user: userUpdated });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export { updateUser, deleteUser, getAllUsers, getSingleUser };
