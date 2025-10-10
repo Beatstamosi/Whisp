@@ -86,7 +86,7 @@ const getSingleChat = async (req: Request, res: Response) => {
             },
           },
         },
-        Messages: {
+        messages: {
           orderBy: { sent_at: "asc" },
           include: {
             sender: {
@@ -96,7 +96,7 @@ const getSingleChat = async (req: Request, res: Response) => {
                 lastname: true,
               },
             },
-            MessageRead: {
+            messageRead: {
               include: {
                 user: {
                   select: {
@@ -107,7 +107,7 @@ const getSingleChat = async (req: Request, res: Response) => {
                 },
               },
             },
-            MessageAttachments: true,
+            messageAttachments: true,
           },
         },
       },

@@ -24,9 +24,9 @@ model User {
   signed_up_at    DateTime  @default(now())
   last_seen_at    DateTime?
 
-  ChatParticipants ChatParticipants[]
+  chatParticipants ChatParticipants[]
   sent_Messages    Messages[]
-  MessagesRead     MessageRead[]
+  messagesRead     MessageRead[]
 }
 
 model Chats {
@@ -36,7 +36,7 @@ model Chats {
   name       String?
 
   participants ChatParticipants[]
-  Messages     Messages[]
+  messages     Messages[]
 }
 
 model ChatParticipants {
@@ -57,8 +57,8 @@ model Messages {
   content  String
   sent_at  DateTime @default(now())
 
-  MessageRead        MessageRead[]
-  MessageAttachments MessageAttachments[]
+  messageRead        MessageRead[]
+  messageAttachments MessageAttachments[]
 }
 
 model MessageRead {
