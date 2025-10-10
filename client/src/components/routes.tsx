@@ -6,6 +6,7 @@ import RequireAuth from "./Authentication/RequireAuth.jsx";
 import Home from "./Home/Home.js";
 import EditProfile from "./EditProfile/EditProfile.js";
 import ChatPage from "./ChatPage/ChatPage.js";
+import ViewProfile from "./ViewProfile/ViewProfile.js";
 
 const routes = [
   {
@@ -28,6 +29,10 @@ const routes = [
       {
         path: "edit-profile/:userId",
         element: <EditProfile />,
+      },
+      {
+        path: ":userId",
+        element: <ViewProfile />,
       },
     ],
   },

@@ -1,11 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import type { Chat } from "../types/Chats";
 import { useState, useEffect, useRef, useCallback } from "react";
 import style from "./ChatPage.module.css";
 import { useAuth } from "../Authentication/useAuth";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
-import EmojiPicker from 'emoji-picker-react';
-import type { EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker from "emoji-picker-react";
+import type { EmojiClickData } from "emoji-picker-react";
 
 function ChatPage() {
   const { user } = useAuth();
@@ -15,6 +15,7 @@ function ChatPage() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
   let recipient;
 
   if (!chat?.is_group) {
@@ -24,20 +25,22 @@ function ChatPage() {
   // Handle clicking outside of emoji picker to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (emojiPickerRef.current 
-          && emojiButtonRef.current 
-          && !emojiPickerRef.current.contains(event.target as Node)
-          && !emojiButtonRef.current.contains(event.target as Node)) {
+      if (
+        emojiPickerRef.current &&
+        emojiButtonRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node) &&
+        !emojiButtonRef.current.contains(event.target as Node)
+      ) {
         setShowEmojiPicker(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const onEmojiClick = useCallback((emojiData: EmojiClickData) => {
-    setMessage(prev => prev + emojiData.emoji);
+    setMessage((prev) => prev + emojiData.emoji);
     setShowEmojiPicker(false);
   }, []);
 
@@ -69,7 +72,13 @@ function ChatPage() {
     fetchChats();
   }, [chatId]);
 
-  console.log(chat);
+  const openProfile = (e: React.MouseEvent, userId: string) => {
+    e.preventDefault();
+
+    if (!userId) return;
+
+    navigate(`/${userId}`);
+  };
 
   // Top bar with chat name / recipient name
   // last online: last_seen_at;
@@ -87,7 +96,10 @@ function ChatPage() {
   return (
     <div>
       {/* User Banner */}
-      <div className={style.userBanner}>
+      <div
+        className={style.userBanner}
+        onClick={(e) => openProfile(e, recipient?.user?.id)}
+      >
         <img
           src={recipient?.user?.profile_picture || fallBackProfileImg}
           alt={`${recipient?.user?.firstname} ${recipient?.user?.lastname}`}
@@ -151,9 +163,9 @@ function ChatPage() {
       {/* Message Input Area */}
       <div className={style.inputContainer}>
         <div className={style.emojiPickerWrapper}>
-          <button 
+          <button
             ref={emojiButtonRef}
-            className={style.emojiButton} 
+            className={style.emojiButton}
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
             aria-label="Open emoji picker"
           >
