@@ -101,6 +101,103 @@
   font-weight: bold;
 }
 
+.inputContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  padding: 16px;
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+.emojiButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.emojiButton:hover {
+  background-color: var(--color-bg-alt);
+  color: var(--color-text);
+}
+
+.emojiButton svg {
+  width: 24px;
+  height: 24px;
+}
+
+.emojiPickerWrapper {
+  position: relative;
+}
+
+.emojiPickerContainer {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.messageInput {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  resize: none;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: var(--color-bg-alt);
+  color: var(--color-text);
+  max-height: 120px;
+  min-height: 24px;
+}
+
+.messageInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.sendButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 0;
+}
+
+.sendButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.sendButton:disabled {
+  background-color: var(--color-bg-alt);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .userInfo {
   display: flex;
   flex-direction: column;
