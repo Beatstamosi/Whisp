@@ -115,7 +115,28 @@ const getSingleChat = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json({ chat: chat });
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
+
+    // Convert profile pictures to base64 for all participants
+    const chatUpdated = {
+      ...chat,
+      participants: chat.participants.map((p) => {
+        let base64ProfilePicture = null;
+        if (p.user.profile_picture) {
+          const base64 = Buffer.from(p.user.profile_picture).toString("base64");
+          base64ProfilePicture = `data:image/png;base64,${base64}`;
+        }
+        return {
+          ...p,
+          user: {
+            ...p.user,
+            profile_picture: base64ProfilePicture,
+          },
+        };
+      }),
+    };
+
+    res.status(200).json({ chat: chatUpdated });
   } catch (err) {
     handleError(err, res);
   }
