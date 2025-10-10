@@ -5,7 +5,7 @@ export type ChatParticipants = {
   id: string;
   chat?: Chat;
   chatId: string;
-  user?: User;
+  user: User;
   userId: string;
   joined_at: string;
 };

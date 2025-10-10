@@ -31,7 +31,7 @@ const routes = [
         element: <EditProfile />,
       },
       {
-        path: ":userId",
+        path: "profile/:userId",
         element: <ViewProfile />,
       },
     ],

@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
 import type { Chats } from "@prisma/client";
-import { dummyChat } from "./chatDummyData.js";
 
 const getAllChats = async (req: Request, res: Response) => {
   const chats: Chats[] = [

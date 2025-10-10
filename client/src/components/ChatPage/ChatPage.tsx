@@ -6,6 +6,7 @@ import { useAuth } from "../Authentication/useAuth";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
+import type { ChatParticipants } from "../types/ChatParticipants";
 
 function ChatPage() {
   const { user } = useAuth();
@@ -16,10 +17,10 @@ function ChatPage() {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
-  let recipient;
+  let recipient: ChatParticipants | undefined;
 
-  if (!chat?.is_group) {
-    recipient = chat?.participants?.find((p) => p.user?.id != user?.id);
+  if (!chat?.is_group && chat?.participants) {
+    recipient = chat.participants.find((p) => p.user?.id !== user?.id);
   }
 
   // Handle clicking outside of emoji picker to close it
@@ -72,15 +73,12 @@ function ChatPage() {
     fetchChats();
   }, [chatId]);
 
-  const openProfile = (e: React.MouseEvent, userId: string) => {
+  const openProfile = (e: React.MouseEvent, userId: string | undefined) => {
     e.preventDefault();
-
-    if (!userId) return;
-
-    navigate(`/${userId}`);
-  };
-
-  // Top bar with chat name / recipient name
+    if (userId) {
+      navigate(`/profile/${userId}`);
+    }
+  }; // Top bar with chat name / recipient name
   // last online: last_seen_at;
   // on click open profile of user
   // on click open group chat overview
