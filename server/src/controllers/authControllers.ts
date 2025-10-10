@@ -5,6 +5,7 @@ import { Request, Response, NextFunction } from "express";
 import userExists from "../services/userServices.js";
 import prisma from "../lib/prisma.js";
 import jwt from "jsonwebtoken";
+import handleError from "../services/handleError.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -118,4 +119,29 @@ async function userAlreadySignedUp(req: Request, res: Response) {
   }
 }
 
-export { signUpHandler, loginHandler, getUser, userAlreadySignedUp };
+const logOutHandler = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        last_seen_at: new Date(),
+      },
+    });
+
+    res.sendStatus(201);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export {
+  signUpHandler,
+  loginHandler,
+  getUser,
+  userAlreadySignedUp,
+  logOutHandler,
+};

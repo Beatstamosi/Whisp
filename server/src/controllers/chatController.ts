@@ -84,6 +84,7 @@ const getSingleChat = async (req: Request, res: Response) => {
                 firstname: true,
                 lastname: true,
                 profile_picture: true,
+                last_seen_at: true,
               },
             },
           },

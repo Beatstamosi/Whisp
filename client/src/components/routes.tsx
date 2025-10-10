@@ -1,14 +1,16 @@
+import { createBrowserRouter } from "react-router-dom";
+import RequireAuth from "./Authentication/RequireAuth";
 import App from "../App";
-import ErrorPage from "./ErrorPage/ErrorPage.jsx";
-import Login from "./Authentication/Login/Login.jsx";
-import SignUp from "./Authentication/Sign Up/SignUp.jsx";
-import RequireAuth from "./Authentication/RequireAuth.jsx";
-import Home from "./Home/Home.js";
-import EditProfile from "./EditProfile/EditProfile.js";
-import ChatPage from "./ChatPage/ChatPage.js";
-import ViewProfile from "./ViewProfile/ViewProfile.js";
+import Home from "./Home/Home";
+import ChatPage from "./ChatPage/ChatPage";
+import EditProfile from "./EditProfile/EditProfile";
+import ViewProfile from "./ViewProfile/ViewProfile";
+import Login from "./Authentication/Login/Login";
+import SignUp from "./Authentication/Sign Up/SignUp";
+import ErrorPage from "./ErrorPage/ErrorPage";
+import ChatListPage from "./ChatListPage/ChatListPage";
 
-const routes = [
+export const routes = createBrowserRouter([
   {
     path: "/",
     element: (
@@ -19,12 +21,12 @@ const routes = [
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
+        path: "/",
         element: <Home />,
-      },
-      {
-        path: "chat/:chatId",
-        element: <ChatPage />,
+        children: [
+          { index: true, element: <ChatListPage /> },
+          { path: "chat/:chatId", element: <ChatPage /> },
+        ],
       },
       {
         path: "edit-profile/:userId",
@@ -36,19 +38,7 @@ const routes = [
       },
     ],
   },
-
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/sign-up",
-    element: <SignUp />,
-  },
-  {
-    path: "/error",
-    element: <ErrorPage />,
-  },
-];
-
-export default routes;
+  { path: "/login", element: <Login /> },
+  { path: "/sign-up", element: <SignUp /> },
+  { path: "/error", element: <ErrorPage /> },
+]);
