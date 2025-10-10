@@ -113,7 +113,7 @@ const getSingleChat = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(201).json({ chat: dummyChat });
+    res.status(201).json({ chat: chat });
   } catch (err) {
     handleError(err, res);
   }
