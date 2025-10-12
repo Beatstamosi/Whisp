@@ -143,4 +143,31 @@ const getSingleChat = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllChats, openChatWithUser, getSingleChat };
+const addMessage = async (req: Request, res: Response) => {
+  const { chatId } = req.params;
+  const senderId = req.user?.id;
+  const content = req.body.content;
+
+  if (!chatId || !content || !senderId)
+    throw new Error("Missing chatId or content");
+
+  try {
+    await prisma.chats.update({
+      where: { id: chatId },
+      data: {
+        messages: {
+          create: {
+            senderId: senderId,
+            content,
+          },
+        },
+      },
+    });
+
+    res.sendStatus(201);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export { getAllChats, openChatWithUser, getSingleChat, addMessage };

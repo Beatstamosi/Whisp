@@ -8,6 +8,9 @@ import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
 import type { ChatParticipants } from "../types/ChatParticipants";
 
+// TODO: DISABLE SEND BUTTON IF MESSAGE IS EMPTY
+// TODO: IMPLEMENT GROUP CHAT MECHANIC --> BANNER
+
 function ChatPage() {
   const { user } = useAuth();
   const { chatId } = useParams();
@@ -51,8 +54,6 @@ function ChatPage() {
     setShowEmojiPicker(false);
   }, []);
 
-  // TODO: IMPLEMENT GROUP CHAT MECHANIC
-
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -83,6 +84,35 @@ function ChatPage() {
     e.preventDefault();
     if (userId) {
       navigate(`/profile/${userId}`);
+    }
+  };
+
+  const handlerSendMessage = async (
+    e: React.MouseEvent | React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/chats/${chatId}/message`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ content: message }),
+        }
+      );
+
+      // PLACEHOLDER UNTIL WEBSOCKET IS IMPLEMENTED
+      if (res.ok) {
+        setMessage("");
+        navigate(0);
+      }
+    } catch (err) {
+      console.error("Error sending message: ", err);
     }
   };
 
@@ -197,12 +227,15 @@ function ChatPage() {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              // handleSendMessage will be implemented later
+              handlerSendMessage(e);
             }
           }}
         />
-        <button className={style.sendButton} aria-label="Send message">
+        <button
+          className={style.sendButton}
+          aria-label="Send message"
+          onClick={(e) => handlerSendMessage(e)}
+        >
           <svg
             width="24"
             height="24"
