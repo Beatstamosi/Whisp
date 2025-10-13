@@ -3,6 +3,7 @@ import type { Chat } from "../types/Chats";
 import { useEffect, useState } from "react";
 import type { User } from "../types/User";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
+import fallBackLogo from "../../assets/whisp_logo.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/useAuth";
 
@@ -150,6 +151,36 @@ function ChatListPage() {
     }
   };
 
+  const getChatAvatar = (chat: Chat) => {
+    let imageSrc;
+
+    // Group Chat
+    if (chat.is_group) {
+      imageSrc = fallBackLogo;
+      // Chat with oneself
+    } else if (chat.participants?.length === 1) {
+      imageSrc =
+        chat?.participants?.[0].user?.profile_picture ?? fallBackProfileImg;
+      // Personal Chat
+    } else {
+      const recipient = chat.participants?.find((p) => p.user.id !== user?.id);
+      if (recipient?.user) {
+        imageSrc = recipient.user.profile_picture ?? fallBackProfileImg;
+      }
+    }
+
+    return <img src={imageSrc} className={style.avatar} />;
+  };
+
+  const formatDate = (date: string | undefined) => {
+    if (!date) return "N/A";
+
+    return `${new Date(date).toLocaleDateString()} ${new Intl.DateTimeFormat(
+      "default",
+      { timeStyle: "short" }
+    ).format(new Date(date))}`;
+  };
+
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>
@@ -175,15 +206,30 @@ function ChatListPage() {
 
       <div className={activeView === "chats" ? style.chatList : style.userList}>
         {activeView === "chats" &&
-          displayChats?.map((chat) => (
-            <div
-              key={chat.id}
-              className={style.chatItem}
-              onClick={() => navigate(`/chat/${chat.id}`)}
-            >
-              <h2>{getChatDisplayName(chat)}</h2>
-            </div>
-          ))}
+          displayChats?.map((chat) => {
+            const lastMessage = chat.messages?.[chat.messages.length - 1];
+
+            return (
+              <div
+                key={chat.id}
+                className={style.chatItem}
+                onClick={() => navigate(`/chat/${chat.id}`)}
+              >
+                {getChatAvatar(chat)}
+                <div className={style.itemInfo}>
+                  <h2>{getChatDisplayName(chat)}</h2>
+                  <p className={style.messageContent}>
+                    {lastMessage?.content && lastMessage.content.length > 100
+                      ? `${lastMessage.content.slice(0, 100)}...`
+                      : lastMessage?.content}
+                  </p>
+                  <p className={style.timestamp}>
+                    {lastMessage?.sent_at && formatDate(lastMessage.sent_at)}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
 
         {activeView === "user" &&
           displayUsers?.map((user) => (
@@ -201,7 +247,7 @@ function ChatListPage() {
                 <h2>
                   {user.firstname} {user.lastname}
                 </h2>
-                {user.bio && <p>{user.bio}</p>}
+                {user.bio && <p className={style.messageContent}>{user.bio}</p>}
               </div>
             </div>
           ))}
