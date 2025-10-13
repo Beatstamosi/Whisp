@@ -1,25 +1,31 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
-import type { Chats } from "@prisma/client";
 
 const getAllChats = async (req: Request, res: Response) => {
-  const chats: Chats[] = [
-    {
-      id: "1",
-      name: "Chat 1",
-      created_at: new Date(),
-      is_group: false,
-    },
-    {
-      id: "2",
-      name: "Chat 2",
-      created_at: new Date(),
-      is_group: false,
-    },
-  ];
+  const userId = req.user?.id;
+
+  if (!userId) return;
 
   try {
+    const chats = await prisma.chats.findMany({
+      where: {
+        participants: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      include: {
+        participants: {
+          include: {
+            user: true,
+          },
+        },
+        messages: true,
+      },
+    });
+
     res.status(201).json({ chats });
   } catch (err) {
     handleError(err, res);

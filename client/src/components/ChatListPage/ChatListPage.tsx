@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { User } from "../types/User";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Authentication/useAuth";
 
 // TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
 // TODO: implement backend for fetching chats
@@ -19,6 +20,7 @@ function ChatListPage() {
   const [displayChats, setDisplayChats] = useState<Chat[] | null>();
   const [displayUsers, setDisplayUsers] = useState<User[] | null>();
   const [activeView, setActiveView] = useState<"chats" | "user">("chats");
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // get all chats of user via useEffect; store in state
@@ -132,6 +134,22 @@ function ChatListPage() {
     }
   };
 
+  const getChatDisplayName = (chat: Chat) => {
+    // Group Chat
+    if (chat.is_group) {
+      return chat.name;
+      // Chat with oneself
+    } else if (chat.participants?.length === 1) {
+      return `${chat?.participants?.[0].user?.firstname} ${chat?.participants?.[0].user?.lastname}`;
+      // Personal Chat
+    } else {
+      const recipient = chat.participants?.find((p) => p.user.id !== user?.id);
+      if (recipient?.user) {
+        return `${recipient?.user.firstname} ${recipient.user.lastname}`;
+      }
+    }
+  };
+
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>
@@ -163,7 +181,7 @@ function ChatListPage() {
               className={style.chatItem}
               onClick={() => navigate(`/chat/${chat.id}`)}
             >
-              <h2>{chat.name}</h2>
+              <h2>{getChatDisplayName(chat)}</h2>
             </div>
           ))}
 
