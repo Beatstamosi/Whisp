@@ -252,6 +252,9 @@ function ChatListPage() {
             </div>
           ))}
       </div>
+      <div className={style.createGroupChatBtn}>
+        <button>+</button>
+      </div>
     </div>
   );
 }
