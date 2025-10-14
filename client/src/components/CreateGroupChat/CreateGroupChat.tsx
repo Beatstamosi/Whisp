@@ -5,7 +5,6 @@ import type { User } from "../types/User";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 
 // TODO: Handle create chat
-// TODO: Add users to participants
 
 function CreateGroupChat() {
   const [name, setName] = useState("");
@@ -17,7 +16,7 @@ function CreateGroupChat() {
   // add creator directly to chat
   useEffect(() => {
     if (userId) {
-      setParticipants((prev) => [...prev, userId]);
+      setParticipants(() => [userId]);
     }
   }, [userId]);
 
@@ -91,38 +90,51 @@ function CreateGroupChat() {
 
         <div className={style.userListWrapper}>
           <form className={style.userList}>
-            {displayUsers?.map((user) => (
-              <label key={user.id} className={style.userItem}>
-                <img
-                  src={user.profile_picture || fallBackProfileImg}
-                  alt={`${user.firstname} ${user.lastname}`}
-                  className={style.avatar}
-                />
-                <div className={style.itemInfo}>
-                  <h2>
-                    {user.firstname} {user.lastname}
-                  </h2>
-                  {user.bio && (
-                    <p className={style.messageContent}>{user.bio}</p>
-                  )}
-                </div>
-                <input
-                  type="checkbox"
-                  value={user.id}
-                  checked={participants.includes(user.id)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setParticipants((prev) => [...prev, user.id]);
-                    } else {
-                      setParticipants((prev) =>
-                        prev.filter((id) => id !== user.id)
-                      );
-                    }
-                  }}
-                  className={style.checkbox}
-                />
-              </label>
-            ))}
+            {displayUsers?.map((user) => {
+              const isSelected = participants.includes(user.id);
+
+              return (
+                <label
+                  key={user.id}
+                  className={`${style.userItem} ${
+                    isSelected ? style.checked : ""
+                  }`}
+                >
+                  <img
+                    src={user.profile_picture || fallBackProfileImg}
+                    alt={`${user.firstname} ${user.lastname}`}
+                    className={style.avatar}
+                  />
+                  <div
+                    className={`${style.itemInfo} ${
+                      isSelected ? style.checked : ""
+                    }`}
+                  >
+                    <h2>
+                      {user.firstname} {user.lastname}
+                    </h2>
+                    {user.bio && (
+                      <p className={style.messageContent}>{user.bio}</p>
+                    )}
+                  </div>
+                  <input
+                    type="checkbox"
+                    value={user.id}
+                    checked={participants.includes(user.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setParticipants((prev) => [...prev, user.id]);
+                      } else {
+                        setParticipants((prev) =>
+                          prev.filter((id) => id !== user.id)
+                        );
+                      }
+                    }}
+                    className={style.checkbox}
+                  />
+                </label>
+              );
+            })}
           </form>
         </div>
 

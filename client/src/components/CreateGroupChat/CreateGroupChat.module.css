@@ -84,10 +84,6 @@
   transition: background-color 0.2s ease-in-out;
 }
 
-.userItem:hover {
-  background-color: var(--color-bg-alt);
-}
-
 .avatar {
   width: 42px;
   height: 42px;
@@ -159,6 +155,15 @@
   opacity: 0.5;
   cursor: not-allowed;
   background-color: var(--color-bg-alt);
+}
+
+.checked.userItem {
+  background-color: var(--color-primary-light);
+}
+
+.checked h2,
+.checked p {
+  color: white;
 }
 
 @media (min-width: 768px) {
