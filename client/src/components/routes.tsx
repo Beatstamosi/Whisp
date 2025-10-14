@@ -9,6 +9,7 @@ import Login from "./Authentication/Login/Login";
 import SignUp from "./Authentication/Sign Up/SignUp";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import ChatListPage from "./ChatListPage/ChatListPage";
+import CreateGroupChat from "./CreateGroupChat/createGroupChat";
 
 export const routes = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ export const routes = createBrowserRouter([
       {
         path: "profile/:userId",
         element: <ViewProfile />,
+      },
+      {
+        path: "create-group-chat/:userId",
+        element: <CreateGroupChat />,
       },
     ],
   },

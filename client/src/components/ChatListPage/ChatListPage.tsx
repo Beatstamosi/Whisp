@@ -181,6 +181,13 @@ function ChatListPage() {
     ).format(new Date(date))}`;
   };
 
+  const handlerCreateGroupChat = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    navigate(`/create-group-chat/${user?.id}`);
+  };
+
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>
@@ -253,7 +260,7 @@ function ChatListPage() {
           ))}
       </div>
       <div className={style.createGroupChatBtn}>
-        <button>+</button>
+        <button onClick={(e) => handlerCreateGroupChat(e)}>+</button>
       </div>
     </div>
   );
