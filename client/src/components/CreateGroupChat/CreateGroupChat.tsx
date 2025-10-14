@@ -47,8 +47,9 @@ function CreateGroupChat() {
 
   // Initiate displayUsers with all Users from DB
   useEffect(() => {
-    setDisplayUsers(users);
-  }, [users]);
+    const usersWithOuthOP = users?.filter((user) => user.id !== userId);
+    setDisplayUsers(usersWithOuthOP);
+  }, [users, userId]);
 
   const searchHandler = (value: string) => {
     value = value.toLowerCase();
