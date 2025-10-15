@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import style from "./CreateGroupChat.module.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { User } from "../types/User";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
-
-// TODO: Handle create chat
 
 function CreateGroupChat() {
   const [name, setName] = useState("");
@@ -12,6 +10,7 @@ function CreateGroupChat() {
   const [users, setUsers] = useState<User[]>();
   const [displayUsers, setDisplayUsers] = useState<User[] | null>();
   const { userId } = useParams();
+  const navigate = useNavigate();
 
   // add creator directly to chat
   useEffect(() => {
@@ -63,6 +62,34 @@ function CreateGroupChat() {
       setDisplayUsers(filteredUsers);
     } else {
       setDisplayUsers(users);
+    }
+  };
+
+  const handlerCreateGroupChat = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/chats/group`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+          body: JSON.stringify({ name, participants }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        navigate(`/chat/${data.chatId}`);
+      }
+    } catch (err) {
+      console.error("Error creating group chat: ", err);
+      navigate("/error");
     }
   };
 
@@ -142,7 +169,7 @@ function CreateGroupChat() {
           <button
             disabled={participants.length < 3 || !name.trim()}
             onClick={(e) => {
-              e.preventDefault();
+              handlerCreateGroupChat(e);
             }}
           >
             Create Chat

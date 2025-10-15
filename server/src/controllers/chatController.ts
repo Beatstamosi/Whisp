@@ -200,4 +200,38 @@ const addMessage = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllChats, openChatWithUser, getSingleChat, addMessage };
+const createGroupChat = async (req: Request, res: Response) => {
+  const { name, participants } = req.body;
+
+  try {
+    if (!name || !participants) throw Error("Missing name / participants");
+
+    const participantsFormatted = participants.map((p: string) => ({
+      userId: p,
+    }));
+
+    const chat = await prisma.chats.create({
+      data: {
+        is_group: true,
+        name: name,
+        participants: {
+          createMany: {
+            data: participantsFormatted,
+          },
+        },
+      },
+    });
+
+    res.status(201).json({ chatId: chat.id });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export {
+  getAllChats,
+  openChatWithUser,
+  getSingleChat,
+  addMessage,
+  createGroupChat,
+};
