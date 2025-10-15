@@ -7,9 +7,7 @@ import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
 import type { ChatParticipants } from "../types/ChatParticipants";
-
-// TODO: DISABLE SEND BUTTON IF MESSAGE IS EMPTY
-// TODO: IMPLEMENT GROUP CHAT MECHANIC --> BANNER
+import whispLogo from "../../assets/groupChatFallBack.png";
 
 function ChatPage() {
   const { user } = useAuth();
@@ -116,32 +114,58 @@ function ChatPage() {
     }
   };
 
+  const openGroupChatInfo = (
+    e: React.MouseEvent,
+    chatId: string | undefined
+  ) => {
+    e.preventDefault();
+    if (chatId) {
+      navigate(`/profile/group/${chatId}`);
+    }
+  };
+
   return (
     <div>
       {/* User Banner */}
-      <div
-        className={style.userBanner}
-        onClick={(e) => openProfile(e, recipient?.user?.id)}
-      >
-        <img
-          src={recipient?.user?.profile_picture || fallBackProfileImg}
-          alt={`${recipient?.user?.firstname} ${recipient?.user?.lastname}`}
-          className={style.avatar}
-        />
-        <div className={style.userInfo}>
-          <span className={style.userName}>
-            {recipient?.user?.firstname} {recipient?.user?.lastname}
-          </span>
-          <span className={style.lastOnline}>
-            Last online:{" "}
-            {recipient?.user?.last_seen_at &&
-              new Intl.DateTimeFormat("default", {
-                dateStyle: "short",
-                timeStyle: "short",
-              }).format(new Date(recipient.user.last_seen_at))}
-          </span>
+      {!chat?.is_group ? (
+        <div
+          className={style.userBanner}
+          onClick={(e) => openProfile(e, recipient?.user?.id)}
+        >
+          <img
+            src={recipient?.user?.profile_picture || fallBackProfileImg}
+            alt={`${recipient?.user?.firstname} ${recipient?.user?.lastname}`}
+            className={style.avatar}
+          />
+          <div className={style.userInfo}>
+            <span className={style.userName}>
+              {recipient?.user?.firstname} {recipient?.user?.lastname}
+            </span>
+            <span className={style.lastOnline}>
+              Last online:{" "}
+              {recipient?.user?.last_seen_at &&
+                new Intl.DateTimeFormat("default", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                }).format(new Date(recipient.user.last_seen_at))}
+            </span>
+          </div>
         </div>
-      </div>
+      ) : (
+        // Group Chat Banner
+        <div
+          className={style.userBanner}
+          onClick={(e) => openGroupChatInfo(e, chat.id)}
+        >
+          <img src={whispLogo} className={style.avatar} />
+          <div className={style.userInfo}>
+            <span className={style.userName}>{chat?.name}</span>
+            <span className={style.lastOnline}>
+              {chat?.participants?.map((p) => p.user.firstname).join(", ")}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Message Area */}
       <div className={style.messageContainer}>
@@ -235,6 +259,7 @@ function ChatPage() {
           className={style.sendButton}
           aria-label="Send message"
           onClick={(e) => handlerSendMessage(e)}
+          disabled={message.length < 1}
         >
           <svg
             width="24"
