@@ -56,6 +56,33 @@ function ViewProfile() {
     }
   );
 
+  const handleStartChat = async (
+    e: React.MouseEvent,
+    userId: string | undefined
+  ) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/chats/open-chat-user/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      navigate(`/chat/${data.chatId}`);
+    } catch (err) {
+      console.error("Error opening chat with user ", err);
+      navigate("/error");
+    }
+  };
+
   return (
     <div className={style.container}>
       <div className={style.profileCard}>
@@ -90,6 +117,14 @@ function ViewProfile() {
           <h1 className={style.userName}>
             {user.firstname} {user.lastname}
           </h1>
+          <div>
+            <button
+              className={style.startChatBtn}
+              onClick={(e) => handleStartChat(e, userId)}
+            >
+              Start Chat
+            </button>
+          </div>
 
           <div className={style.infoSection}>
             <h2 className={style.sectionTitle}>Bio</h2>
@@ -99,9 +134,6 @@ function ViewProfile() {
           <div className={style.infoSection}>
             <h2 className={style.sectionTitle}>Member Since</h2>
             <p className={style.joinDate}>{formattedDate}</p>
-          </div>
-          <div>
-            <button className={style.startChatBtn}>Send Message</button>
           </div>
         </div>
       </div>
