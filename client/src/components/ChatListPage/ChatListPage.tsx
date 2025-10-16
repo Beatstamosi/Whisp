@@ -3,7 +3,7 @@ import type { Chat } from "../types/Chats";
 import { useEffect, useState } from "react";
 import type { User } from "../types/User";
 import fallBackProfileImg from "../../assets/fallback_profile_img.png";
-import fallBackLogo from "../../assets/whisp_logo.png";
+import whispLogo from "../../assets/groupChatFallBack.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/useAuth";
 
@@ -150,7 +150,7 @@ function ChatListPage() {
 
     // Group Chat
     if (chat.is_group) {
-      imageSrc = fallBackLogo;
+      imageSrc = whispLogo;
       // Chat with oneself
     } else if (chat.participants?.length === 1) {
       imageSrc =
