@@ -205,3 +205,9 @@
 .lastOnline {
   font-size: 0.85em;
 }
+
+.senderGroupChat {
+    font-size: 0.85em;
+    font-style: italic;
+    font-weight: 200;
+}

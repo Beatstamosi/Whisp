@@ -174,6 +174,7 @@ function ChatPage() {
         ) : (
           chat?.messages?.map((message) => {
             const isSender = message.sender?.id === user?.id;
+
             return (
               <div
                 key={message.id}
@@ -193,6 +194,11 @@ function ChatPage() {
                     isSender ? style.sender : style.recipient
                   }`}
                 >
+                  {chat.is_group && !isSender && (
+                    <div
+                      className={style.senderGroupChat}
+                    >{`${message.sender?.firstname} ${message.sender?.lastname}`}</div>
+                  )}
                   <div className={style.messageContent}>{message.content}</div>
                   <span className={style.messageSentAt}>
                     {message.sent_at &&

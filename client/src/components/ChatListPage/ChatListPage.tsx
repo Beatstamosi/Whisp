@@ -8,12 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/useAuth";
 
 // TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
-// TODO: implement backend for fetching chats
-// TODO: implement click on user to start chat
-// check if chat exists (req.user.id + user.id)
-// --> return chat Id and navigate
-// otherwise create new chat with both as recipients
-// --> return chat id and navigate
 
 function ChatListPage() {
   const [chats, setChats] = useState<Chat[] | null>(null);
@@ -150,6 +144,8 @@ function ChatListPage() {
       }
     }
   };
+
+  console.log(chats);
 
   const getChatAvatar = (chat: Chat) => {
     let imageSrc;
