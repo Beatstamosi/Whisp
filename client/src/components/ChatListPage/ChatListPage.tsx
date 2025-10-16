@@ -145,8 +145,6 @@ function ChatListPage() {
     }
   };
 
-  console.log(chats);
-
   const getChatAvatar = (chat: Chat) => {
     let imageSrc;
 
