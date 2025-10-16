@@ -20,7 +20,7 @@
 .backButton {
   position: absolute;
   top: 0rem;
-  left: -8rem;
+  left: 0rem;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -28,6 +28,7 @@
   border-radius: 50%;
   color: var(--color-primary);
   transition: background-color 0.2s ease;
+  width: fit-content;
 }
 
 .backButton:hover {
@@ -102,4 +103,19 @@
   min-height: 100vh;
   font-size: 1.2rem;
   color: var(--color-error);
+}
+
+.startChatBtn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.startChatBtn:hover {
+  background-color: var(--color-primary-dark);
 }

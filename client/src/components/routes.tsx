@@ -28,23 +28,23 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: <ChatListPage /> },
           { path: "chat/:chatId", element: <ChatPage /> },
+          {
+            path: "edit-profile/:userId",
+            element: <EditProfile />,
+          },
+          {
+            path: "profile/:userId",
+            element: <ViewProfile />,
+          },
+          {
+            path: "create-group-chat/:userId",
+            element: <CreateGroupChat />,
+          },
+          {
+            path: "profile/group/:chatId",
+            element: <GroupChatProfile />,
+          },
         ],
-      },
-      {
-        path: "edit-profile/:userId",
-        element: <EditProfile />,
-      },
-      {
-        path: "profile/:userId",
-        element: <ViewProfile />,
-      },
-      {
-        path: "create-group-chat/:userId",
-        element: <CreateGroupChat />,
-      },
-      {
-        path: "profile/group/:chatId",
-        element: <GroupChatProfile />,
       },
     ],
   },

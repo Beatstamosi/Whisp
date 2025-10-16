@@ -1,13 +1,12 @@
 import style from "./Home.module.css";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import ChatListPage from "../ChatListPage/ChatListPage";
-import ChatPage from "../ChatPage/ChatPage";
 
 function Home() {
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const location = useLocation();
-  const viewingChat = location.pathname.startsWith("/chat/");
+  const isStartPage = location.pathname === "/";
 
   if (isDesktop) {
     return (
@@ -16,12 +15,12 @@ function Home() {
           <ChatListPage />
         </div>
         <div className={style.chatPage}>
-          {viewingChat ? (
-            <ChatPage />
-          ) : (
-            <div className={style.noChatSelected}>
-              Select a chat to start messaging
+          {isStartPage ? (
+            <div className={style.startPageInfo}>
+              Select a chat or recipient to start Messaging with Whisp
             </div>
+          ) : (
+            <Outlet />
           )}
         </div>
       </div>
@@ -31,7 +30,7 @@ function Home() {
   // Mobile layout
   return (
     <div className={style.mobileLayout}>
-      {viewingChat ? <ChatPage /> : <ChatListPage />}
+      <Outlet />
     </div>
   );
 }

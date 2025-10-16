@@ -38,3 +38,44 @@
   width: 100vw;
   overflow: hidden;
 }
+
+.startPageInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+  font-size: 1.5rem;
+  font-weight: 500;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-primary-light) 50%
+  );
+  position: relative;
+}
+
+.startPageInfo::before {
+  content: "💬";
+  font-size: 4rem;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.2;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  50% {
+    transform: translate(-50%, -60%);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+  }
+}

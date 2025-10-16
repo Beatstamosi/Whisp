@@ -100,6 +100,9 @@ function ViewProfile() {
             <h2 className={style.sectionTitle}>Member Since</h2>
             <p className={style.joinDate}>{formattedDate}</p>
           </div>
+          <div>
+            <button className={style.startChatBtn}>Send Message</button>
+          </div>
         </div>
       </div>
     </div>
