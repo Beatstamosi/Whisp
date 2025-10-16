@@ -15,6 +15,9 @@ const getAllChats = async (req: Request, res: Response) => {
             userId: userId,
           },
         },
+        messages: {
+          some: {},
+        },
       },
       include: {
         participants: {
