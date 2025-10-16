@@ -60,17 +60,24 @@ const openChatWithUser = async (req: Request, res: Response) => {
   const { recipientId } = req.params;
   const openChatUserId = req.user?.id;
 
-  if (!openChatUserId) return;
-
   try {
+    if (!openChatUserId || !recipientId) throw Error("Missing recipients");
+
     const existingChat = await prisma.chats.findFirst({
       where: {
         is_group: false,
-        participants: {
-          every: {
-            OR: [{ userId: recipientId }, { userId: openChatUserId }],
+        AND: [
+          {
+            participants: {
+              some: { userId: openChatUserId },
+            },
           },
-        },
+          {
+            participants: {
+              some: { userId: recipientId },
+            },
+          },
+        ],
       },
       include: { participants: true },
     });
@@ -78,15 +85,17 @@ const openChatWithUser = async (req: Request, res: Response) => {
     if (existingChat) {
       res.status(201).json({ chatId: existingChat.id });
     } else {
+      const participantData =
+        recipientId === openChatUserId
+          ? [{ userId: recipientId }]
+          : [{ userId: openChatUserId }, { userId: recipientId }];
+
       const newChat = await prisma.chats.create({
         data: {
           is_group: false,
           name: null,
           participants: {
-            create:
-              recipientId !== openChatUserId
-                ? [{ userId: recipientId }, { userId: openChatUserId }]
-                : [{ userId: recipientId }],
+            create: participantData,
           },
         },
       });

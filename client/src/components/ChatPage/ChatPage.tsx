@@ -124,6 +124,8 @@ function ChatPage() {
     }
   };
 
+  console.log(chat);
+
   return (
     <div>
       {/* User Banner */}
