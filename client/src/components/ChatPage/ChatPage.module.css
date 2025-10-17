@@ -26,7 +26,7 @@
 
 .messageContainer {
   padding: 20px;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 250px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -173,4 +173,11 @@
 
 .lastOnline {
   font-size: 0.85em;
+}
+
+@media (max-width: 768px) {
+  .messageContainer {
+    padding: 20px;
+    height: calc(100vh - 180px);
+  }
 }
