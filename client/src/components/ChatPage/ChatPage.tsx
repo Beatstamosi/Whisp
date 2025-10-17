@@ -8,6 +8,7 @@ import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
 import type { ChatParticipants } from "../types/ChatParticipants";
 import whispLogo from "../../assets/groupChatFallBack.png";
+import Message from "../Message/Message";
 
 // TODO: Implement mark message as read
 // on chatPage load add user.id to messageRead []
@@ -194,24 +195,12 @@ function ChatPage() {
                     className={style.messageAvatar}
                   />
                 )}
-                <div
-                  className={`${style.message} ${
-                    isSender ? style.sender : style.recipient
-                  }`}
-                >
-                  {chat.is_group && !isSender && (
-                    <div
-                      className={style.senderGroupChat}
-                    >{`${message.sender?.firstname} ${message.sender?.lastname}`}</div>
-                  )}
-                  <div className={style.messageContent}>{message.content}</div>
-                  <span className={style.messageSentAt}>
-                    {message.sent_at &&
-                      new Intl.DateTimeFormat("default", {
-                        timeStyle: "short",
-                      }).format(new Date(message.sent_at))}
-                  </span>
-                </div>
+                <Message
+                  chat={chat}
+                  isSender={isSender}
+                  message={message}
+                  userId={user?.id}
+                />
               </div>
             );
           })

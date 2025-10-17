@@ -188,8 +188,6 @@ function ChatListPage() {
     navigate(`/create-group-chat/${user?.id}`);
   };
 
-  console.log(chats);
-
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>
