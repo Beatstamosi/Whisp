@@ -21,8 +21,16 @@ function ChatPage() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   let recipient: ChatParticipants | undefined;
+
+  const scrollToBottom = useCallback(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  }, []);
 
   if (!chat?.is_group && chat?.participants) {
     if (chat.participants.length === 1) {
@@ -82,6 +90,11 @@ function ChatPage() {
     fetchChats();
   }, [chatId]);
 
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [chat?.messages, scrollToBottom]);
+
   const openProfile = (e: React.MouseEvent, userId: string | undefined) => {
     e.preventDefault();
     if (userId) {
@@ -111,7 +124,9 @@ function ChatPage() {
       // PLACEHOLDER UNTIL WEBSOCKET IS IMPLEMENTED
       if (res.ok) {
         setMessage("");
-        navigate(0);
+        const data = await res.json();
+        setChat(data.chat);
+        scrollToBottom();
       }
     } catch (err) {
       console.error("Error sending message: ", err);
@@ -174,7 +189,7 @@ function ChatPage() {
       )}
 
       {/* Message Area */}
-      <div className={style.messageContainer}>
+      <div className={style.messageContainer} ref={messageContainerRef}>
         {chat?.messages?.length === 0 ? (
           <div className={style.noMessages}>Start a conversation!</div>
         ) : (
