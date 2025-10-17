@@ -11,9 +11,7 @@ const getAllChats = async (req: Request, res: Response) => {
     const chats = await prisma.chats.findMany({
       where: {
         participants: {
-          some: {
-            userId: userId,
-          },
+          some: { userId },
         },
         messages: {
           some: {},
@@ -21,11 +19,26 @@ const getAllChats = async (req: Request, res: Response) => {
       },
       include: {
         participants: {
+          include: { user: true },
+        },
+        messages: {
+          orderBy: { sent_at: "desc" },
+          take: 1,
           include: {
-            user: true,
+            messageRead: {
+              where: { userId },
+            },
           },
         },
-        messages: true,
+        _count: {
+          select: {
+            messages: {
+              where: {
+                messageRead: { none: { userId } },
+              },
+            },
+          },
+        },
       },
     });
 

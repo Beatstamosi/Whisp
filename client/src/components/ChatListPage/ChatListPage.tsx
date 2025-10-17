@@ -10,9 +10,15 @@ import { useAuth } from "../Authentication/useAuth";
 // TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
 
 function ChatListPage() {
-  const [chats, setChats] = useState<Chat[] | null>(null);
+  interface ChatWithUnread extends Chat {
+    _count: {
+      messages: number;
+    };
+  }
+
+  const [chats, setChats] = useState<ChatWithUnread[] | null>(null);
   const [users, setUsers] = useState<User[] | null>(null);
-  const [displayChats, setDisplayChats] = useState<Chat[] | null>();
+  const [displayChats, setDisplayChats] = useState<ChatWithUnread[] | null>();
   const [displayUsers, setDisplayUsers] = useState<User[] | null>();
   const [activeView, setActiveView] = useState<"chats" | "user">("chats");
   const { user } = useAuth();
@@ -182,6 +188,8 @@ function ChatListPage() {
     navigate(`/create-group-chat/${user?.id}`);
   };
 
+  console.log(chats);
+
   return (
     <div className={style.chatListWrapper}>
       <div className={style.filterMenuWrapper}>
@@ -208,7 +216,7 @@ function ChatListPage() {
       <div className={activeView === "chats" ? style.chatList : style.userList}>
         {activeView === "chats" &&
           displayChats?.map((chat) => {
-            const lastMessage = chat.messages?.[chat.messages.length - 1];
+            const lastMessage = chat.messages?.[0];
 
             return (
               <div
@@ -220,13 +228,18 @@ function ChatListPage() {
                 <div className={style.itemInfo}>
                   <h2>{getChatDisplayName(chat)}</h2>
                   <p className={style.messageContent}>
-                    {lastMessage?.content && lastMessage.content.length > 100
-                      ? `${lastMessage.content.slice(0, 100)}...`
+                    {lastMessage?.content && lastMessage.content.length > 35
+                      ? `${lastMessage.content.slice(0, 35)}...`
                       : lastMessage?.content}
                   </p>
                   <p className={style.timestamp}>
                     {lastMessage?.sent_at && formatDate(lastMessage.sent_at)}
                   </p>
+                  {chat._count.messages > 0 && (
+                    <span className={style.unreadCount}>
+                      {chat._count.messages}
+                    </span>
+                  )}
                 </div>
               </div>
             );

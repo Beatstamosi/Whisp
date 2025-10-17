@@ -144,6 +144,23 @@ input[type="search"]:focus {
   margin: 0;
 }
 
+.unreadCount {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-primary);
+  color: white;
+  border-radius: 12px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ----------------------------
    Scrollable List
    ---------------------------- */

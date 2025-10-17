@@ -17,7 +17,7 @@ function Home() {
         <div className={style.chatPage}>
           {isStartPage ? (
             <div className={style.startPageInfo}>
-              Select a chat or recipient to start Messaging with Whisp
+              Select a chat or user to start Messaging with Whisp
             </div>
           ) : (
             <Outlet />

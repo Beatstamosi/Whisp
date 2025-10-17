@@ -9,6 +9,9 @@ import type { EmojiClickData } from "emoji-picker-react";
 import type { ChatParticipants } from "../types/ChatParticipants";
 import whispLogo from "../../assets/groupChatFallBack.png";
 
+// TODO: Implement mark message as read
+// on chatPage load add user.id to messageRead []
+
 function ChatPage() {
   const { user } = useAuth();
   const { chatId } = useParams();
