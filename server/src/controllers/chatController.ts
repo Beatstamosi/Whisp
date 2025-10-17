@@ -222,6 +222,11 @@ const addMessage = async (req: Request, res: Response) => {
           create: {
             senderId: senderId,
             content,
+            messageRead: {
+              create: {
+                userId: senderId,
+              },
+            },
           },
         },
       },
