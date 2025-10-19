@@ -124,9 +124,7 @@ function ChatPage() {
       // PLACEHOLDER UNTIL WEBSOCKET IS IMPLEMENTED
       if (res.ok) {
         setMessage("");
-        const data = await res.json();
-        setChat(data.chat);
-        scrollToBottom();
+        navigate(0);
       }
     } catch (err) {
       console.error("Error sending message: ", err);
@@ -142,8 +140,6 @@ function ChatPage() {
       navigate(`/profile/group/${chatId}`);
     }
   };
-
-  console.log(chat);
 
   return (
     <div>

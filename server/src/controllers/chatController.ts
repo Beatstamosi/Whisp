@@ -128,7 +128,7 @@ const openChatWithUser = async (req: Request, res: Response) => {
         },
         select: {
           id: true,
-        },
+        }
       });
       res.status(201).json({ chatId: newChat.id });
     }
