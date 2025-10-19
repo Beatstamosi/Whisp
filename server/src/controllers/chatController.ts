@@ -90,7 +90,9 @@ const openChatWithUser = async (req: Request, res: Response) => {
             every: { userId: openChatUserId },
           },
         },
-        include: { participants: true },
+        select: {
+          id: true,
+        },
       });
     } else {
       // Normal 1-on-1 chat
@@ -102,7 +104,9 @@ const openChatWithUser = async (req: Request, res: Response) => {
             { participants: { some: { userId: recipientId } } },
           ],
         },
-        include: { participants: true },
+        select: {
+          id: true,
+        },
       });
     }
 
@@ -121,6 +125,9 @@ const openChatWithUser = async (req: Request, res: Response) => {
           participants: {
             create: participantData,
           },
+        },
+        select: {
+          id: true,
         },
       });
       res.status(201).json({ chatId: newChat.id });
