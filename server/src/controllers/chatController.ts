@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
-import { io } from "../index.js";
+import { getIO } from "../socket.js";
+const io = getIO();
 
 const getAllChats = async (req: Request, res: Response) => {
   const userId = req.user?.id;

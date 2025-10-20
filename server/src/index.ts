@@ -11,6 +11,7 @@ import chatRouter from "./routes/chats.js";
 import messageRouter from "./routes/messages.js";
 import { Server } from "socket.io";
 import http from "http";
+import { initializeSocket } from "./socket.js";
 
 // Give access to environment variables
 dotenv.config();
@@ -38,22 +39,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Set up websocket connection
 const server = http.createServer(app);
-export const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
-
-io.on("connection", (socket) => {
-  socket.on("join", (chatId) => {
-    socket.join(chatId);
-  });
-
-  socket.on("leave", (chatId) => {
-    socket.leave(chatId);
-  });
-});
+initializeSocket(server);
 
 // Routes
 app.use("/auth", authRouter);
