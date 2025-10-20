@@ -9,7 +9,6 @@ import "./config/passport.js";
 import userRouter from "./routes/user.js";
 import chatRouter from "./routes/chats.js";
 import messageRouter from "./routes/messages.js";
-import { Server } from "socket.io";
 import http from "http";
 import { initializeSocket } from "./socket.js";
 
@@ -19,6 +18,10 @@ dotenv.config();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Set up websocket connection
+const server = http.createServer(app);
+initializeSocket(server);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -37,10 +40,6 @@ if (process.env.NODE_ENV === "development") {
   );
 }
 
-// Set up websocket connection
-const server = http.createServer(app);
-initializeSocket(server);
-
 // Routes
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -57,4 +56,5 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const PORT = process.env.PORT || 3000;
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

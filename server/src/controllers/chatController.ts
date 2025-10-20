@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
 import { getIO } from "../socket.js";
-const io = getIO();
 
 const getAllChats = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -219,6 +218,7 @@ const addMessage = async (req: Request, res: Response) => {
   const { chatId } = req.params;
   const senderId = req.user?.id;
   const content = req.body.content;
+  const io = getIO();
 
   if (!chatId || !content || !senderId)
     throw new Error("Missing chatId or content");

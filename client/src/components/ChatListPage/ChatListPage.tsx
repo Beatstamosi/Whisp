@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/useAuth";
 
 // TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
+// create room on componentLoad, join with userId?
+// when message is send, also emit to userId (recipient)
+// get all chats and update
 
 function ChatListPage() {
   interface ChatWithUnread extends Chat {
