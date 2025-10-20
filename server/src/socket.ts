@@ -9,6 +9,7 @@ interface ClientToServerEvents {
 
 interface ServerToClientEvents {
   "chat:message": (chat: Chats) => void;
+  "chatList:update": (arg: string) => void;
 }
 
 interface InterServerEvents {
@@ -45,12 +46,20 @@ export function initializeSocket(server: http.Server) {
   });
 
   io.on("connection", (socket: Socket) => {
-    // Handle joining a chat room
+    // Update chat list page
+    socket.on("join-user-room", (userId: string) => {
+      socket.join(userId);
+    });
+
+    socket.on("leave-user-room", (userId: string) => {
+      socket.leave(userId);
+    });
+
+    // Update active Chat Page
     socket.on("join", (chatId: string) => {
       socket.join(chatId);
     });
 
-    // Handle leaving a chat room
     socket.on("leave", (chatId: string) => {
       socket.leave(chatId);
     });

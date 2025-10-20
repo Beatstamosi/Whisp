@@ -9,10 +9,7 @@ import type { EmojiClickData } from "emoji-picker-react";
 import type { ChatParticipants } from "../types/ChatParticipants";
 import whispLogo from "../../assets/groupChatFallBack.png";
 import Message from "../Message/Message";
-import { io } from "socket.io-client";
-
-// TODO: Implement mark message as read
-// on chatPage load add user.id to messageRead []
+import useSocket from "../../hooks/useSocket";
 
 function ChatPage() {
   const { user } = useAuth();
@@ -25,7 +22,7 @@ function ChatPage() {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   let recipient: ChatParticipants | undefined;
-  const socket = io(`${import.meta.env.VITE_API_BASE_URL}`);
+  const socket = useSocket().current;
 
   const scrollToBottom = useCallback(() => {
     if (messageContainerRef.current) {
@@ -45,7 +42,7 @@ function ChatPage() {
   }
 
   useEffect(() => {
-    if (!chatId) return;
+    if (!chatId || !socket) return;
     socket.emit("join", chatId);
 
     socket.on("chat:message", (updatedChat: Chat) => {
@@ -55,7 +52,7 @@ function ChatPage() {
       socket.off("chat:message");
       socket.emit("leave", chatId);
     };
-  }, [socket, chatId]);
+  }, [chatId, socket]);
 
   // Handle clicking outside of emoji picker to close it
   useEffect(() => {

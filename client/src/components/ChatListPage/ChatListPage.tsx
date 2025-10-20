@@ -6,11 +6,13 @@ import fallBackProfileImg from "../../assets/fallback_profile_img.png";
 import whispLogo from "../../assets/groupChatFallBack.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentication/useAuth";
+import useSocket from "../../hooks/useSocket";
 
 // TODO: implement socket.io to have open websocket connection on mount for chats; turn off on demount
 // create room on componentLoad, join with userId?
 // when message is send, also emit to userId (recipient)
 // get all chats and update
+// when message is marked as read, also emit message to chatListPage
 
 function ChatListPage() {
   interface ChatWithUnread extends Chat {
@@ -19,35 +21,53 @@ function ChatListPage() {
     };
   }
 
+  const { user } = useAuth();
   const [chats, setChats] = useState<ChatWithUnread[] | null>(null);
   const [users, setUsers] = useState<User[] | null>(null);
   const [displayChats, setDisplayChats] = useState<ChatWithUnread[] | null>();
   const [displayUsers, setDisplayUsers] = useState<User[] | null>();
   const [activeView, setActiveView] = useState<"chats" | "user">("chats");
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const socket = useSocket().current;
+
+  const fetchChats = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chats`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setChats(data.chats);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // join websocket session
+  useEffect(() => {
+    if (!user?.id || !socket) return;
+
+    socket.emit("join-user-room", user?.id);
+
+    socket.on("chatList:update", () => {
+      fetchChats();
+    });
+
+    return () => {
+      socket.off("chatList:update");
+      socket.emit("leave-user-room", user.id);
+    };
+  }, [user?.id, socket]);
 
   // get all chats of user via useEffect; store in state
   useEffect(() => {
-    const fetchChats = async () => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/chats`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          credentials: "include",
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          setChats(data.chats);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchChats();
   }, []);
 

@@ -1,9 +1,11 @@
 import { useAuth } from "../useAuth.jsx";
 import { useNavigate } from "react-router-dom";
+import useSocket from "../../../hooks/useSocket.js";
 
 function useLogOut() {
   const { setUser, user } = useAuth();
   const navigate = useNavigate();
+  const socket = useSocket().current;
 
   const logOutHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -21,6 +23,9 @@ function useLogOut() {
       );
 
       if (res.ok) {
+        if (socket) {
+          socket.emit("leave-user-room", user?.id);
+        }
         localStorage.removeItem("token");
         setUser(null);
         navigate("/");
