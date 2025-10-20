@@ -9,6 +9,8 @@ import "./config/passport.js";
 import userRouter from "./routes/user.js";
 import chatRouter from "./routes/chats.js";
 import messageRouter from "./routes/messages.js";
+import { Server } from "socket.io";
+import http from "http";
 
 // Give access to environment variables
 dotenv.config();
@@ -34,6 +36,25 @@ if (process.env.NODE_ENV === "development") {
   );
 }
 
+// Set up websocket connection
+const server = http.createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+io.on("connection", (socket) => {
+  socket.on("join", (chatId) => {
+    socket.join(chatId);
+  });
+
+  socket.on("leave", (chatId) => {
+    socket.leave(chatId);
+  });
+});
+
 // Routes
 app.use("/auth", authRouter);
 app.use("/user", userRouter);
@@ -50,4 +71,4 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

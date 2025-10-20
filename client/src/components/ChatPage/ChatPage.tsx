@@ -9,6 +9,7 @@ import type { EmojiClickData } from "emoji-picker-react";
 import type { ChatParticipants } from "../types/ChatParticipants";
 import whispLogo from "../../assets/groupChatFallBack.png";
 import Message from "../Message/Message";
+import { io } from "socket.io-client";
 
 // TODO: Implement mark message as read
 // on chatPage load add user.id to messageRead []
@@ -24,6 +25,7 @@ function ChatPage() {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   let recipient: ChatParticipants | undefined;
+  const socket = io(`${import.meta.env.VITE_API_BASE_URL}`);
 
   const scrollToBottom = useCallback(() => {
     if (messageContainerRef.current) {
@@ -41,6 +43,19 @@ function ChatPage() {
       recipient = chat.participants.find((p) => p.user?.id !== user?.id);
     }
   }
+
+  useEffect(() => {
+    if (!chatId) return;
+    socket.emit("join", chatId);
+
+    socket.on("chat:message", (updatedChat: Chat) => {
+      setChat(updatedChat);
+    });
+    return () => {
+      socket.off("chat:message");
+      socket.emit("leave", chatId);
+    };
+  }, [socket, chatId]);
 
   // Handle clicking outside of emoji picker to close it
   useEffect(() => {
@@ -124,7 +139,6 @@ function ChatPage() {
       // PLACEHOLDER UNTIL WEBSOCKET IS IMPLEMENTED
       if (res.ok) {
         setMessage("");
-        navigate(0);
       }
     } catch (err) {
       console.error("Error sending message: ", err);

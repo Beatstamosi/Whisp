@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
+import { io } from "../index.js";
 
 const getAllChats = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -128,7 +129,7 @@ const openChatWithUser = async (req: Request, res: Response) => {
         },
         select: {
           id: true,
-        }
+        },
       });
       res.status(201).json({ chatId: newChat.id });
     }
@@ -222,7 +223,7 @@ const addMessage = async (req: Request, res: Response) => {
     throw new Error("Missing chatId or content");
 
   try {
-    await prisma.chats.update({
+    const chat = await prisma.chats.update({
       where: { id: chatId },
       data: {
         messages: {
@@ -237,7 +238,70 @@ const addMessage = async (req: Request, res: Response) => {
           },
         },
       },
+      include: {
+        participants: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+                profile_picture: true,
+                last_seen_at: true,
+              },
+            },
+          },
+        },
+        messages: {
+          orderBy: { sent_at: "asc" },
+          include: {
+            sender: {
+              select: {
+                id: true,
+                firstname: true,
+                lastname: true,
+              },
+            },
+            messageRead: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstname: true,
+                    lastname: true,
+                  },
+                },
+              },
+            },
+            messageAttachments: true,
+          },
+        },
+      },
     });
+
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
+
+    // Convert profile pictures to base64 for all participants
+    const chatUpdated = {
+      ...chat,
+      participants: chat.participants.map((p) => {
+        let base64ProfilePicture = null;
+        if (p.user.profile_picture) {
+          const base64 = Buffer.from(p.user.profile_picture).toString("base64");
+          base64ProfilePicture = `data:image/png;base64,${base64}`;
+        }
+        return {
+          ...p,
+          user: {
+            ...p.user,
+            profile_picture: base64ProfilePicture,
+          },
+        };
+      }),
+    };
+
+    // broadcast message to chat
+    io.to(chatId).emit("chat:message", chatUpdated);
 
     res.sendStatus(201);
   } catch (err) {
