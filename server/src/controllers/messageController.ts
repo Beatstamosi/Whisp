@@ -24,7 +24,6 @@ const markMessageAsRead = async (req: Request, res: Response) => {
       },
     });
 
-    // EMIT SOCKET CALL TO CHATLISTPAGE
     io.to(userId).emit("chatList:update", "Marked as read");
 
     res.sendStatus(201);

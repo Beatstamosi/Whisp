@@ -301,8 +301,17 @@ const addMessage = async (req: Request, res: Response) => {
       }),
     };
 
-    // broadcast message to chat
+    // broadcast updated chat to chat page
     io.to(chatId).emit("chat:message", chatUpdated);
+
+    // broadcast updatec chat to chat list of recipient(s)
+    const recipients = chatUpdated.participants.filter(
+      (p) => p.userId !== senderId
+    );
+
+    recipients.forEach((rec) => {
+      io.to(rec.userId).emit("chatList:update", "Marked as read");
+    });
 
     res.sendStatus(201);
   } catch (err) {
