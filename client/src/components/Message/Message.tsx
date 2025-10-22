@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import style from "./Message.module.css";
 import type { Chat } from "../types/Chats";
 import type { Messages } from "../types/Messages";
+import type { MessageAttachments } from "../types/MessageAttachments";
 
 interface MessageType {
   chat: Chat;
@@ -46,6 +47,20 @@ function Message({ chat, isSender, message, userId }: MessageType) {
     message.senderId,
   ]);
 
+  const handleDownload = (file: MessageAttachments) => {
+    const byteCharacters = atob(file.file_data!);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: file.file_type });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = file.file_name || "download";
+    link.click();
+  };
+
   return (
     <div
       ref={ref}
@@ -65,6 +80,17 @@ function Message({ chat, isSender, message, userId }: MessageType) {
             timeStyle: "short",
           }).format(new Date(message.sent_at))}
       </span>
+      {message.messageAttachments?.map((a) => (
+        <div key={a.id}>
+          <span>{a.file_name}</span>
+          <button
+            onClick={() => handleDownload(a)}
+            className={style.downloadButton}
+          >
+            Download
+          </button>
+        </div>
+      ))}
     </div>
   );
 }

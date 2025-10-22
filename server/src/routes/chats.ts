@@ -8,8 +8,10 @@ import {
   createGroupChat,
   getParticipants,
 } from "../controllers/chatController.js";
+import multer from "multer";
 
 const chatRouter = Router();
+const upload = multer();
 
 chatRouter.use(validateJWTToken);
 
@@ -18,7 +20,7 @@ chatRouter.get("/open-chat-user/:recipientId", openChatWithUser);
 chatRouter.get("/:chatId", getSingleChat);
 chatRouter.get("/:chatId/participants", getParticipants);
 
-chatRouter.post("/:chatId/message", addMessage);
+chatRouter.post("/:chatId/message", upload.single("file"), addMessage);
 chatRouter.post("/group", createGroupChat);
 
 export default chatRouter;

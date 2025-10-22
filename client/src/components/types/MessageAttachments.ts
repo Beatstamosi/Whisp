@@ -6,6 +6,6 @@ export type MessageAttachments = {
   messageId: string;
   file_name?: string;
   file_type?: string;
-  file_data?: ArrayBuffer;
+  file_data?: string;
   uploaded_at: string;
 };

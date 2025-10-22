@@ -189,7 +189,7 @@ const getSingleChat = async (req: Request, res: Response) => {
 
     if (!chat) return res.status(404).json({ message: "Chat not found" });
 
-    // Convert profile pictures to base64 for all participants
+    // Convert profile pictures and files to base64 for all participants
     const chatUpdated = {
       ...chat,
       participants: chat.participants.map((p) => {
@@ -206,6 +206,16 @@ const getSingleChat = async (req: Request, res: Response) => {
           },
         };
       }),
+      messages: chat.messages.map((m) => ({
+        ...m,
+        messageAttachments: m.messageAttachments.map((a) => ({
+          ...a,
+          // convert binary to base64 string
+          file_data: a.file_data
+            ? Buffer.from(a.file_data).toString("base64")
+            : null,
+        })),
+      })),
     };
 
     res.status(200).json({ chat: chatUpdated });
@@ -218,6 +228,7 @@ const addMessage = async (req: Request, res: Response) => {
   const { chatId } = req.params;
   const senderId = req.user?.id;
   const content = req.body.content;
+  const file = req.file;
   const io = getIO();
 
   if (!chatId || !content || !senderId)
@@ -236,6 +247,15 @@ const addMessage = async (req: Request, res: Response) => {
                 userId: senderId,
               },
             },
+            messageAttachments: file
+              ? {
+                  create: {
+                    file_name: file.originalname,
+                    file_type: file.mimetype,
+                    file_data: file.buffer,
+                  },
+                }
+              : undefined,
           },
         },
       },
@@ -282,24 +302,34 @@ const addMessage = async (req: Request, res: Response) => {
 
     if (!chat) return res.status(404).json({ message: "Chat not found" });
 
-    // Convert profile pictures to base64 for all participants
+    // Convert profile pictures and files to base64 for all participants
     const chatUpdated = {
-      ...chat,
-      participants: chat.participants.map((p) => {
-        let base64ProfilePicture = null;
-        if (p.user.profile_picture) {
-          const base64 = Buffer.from(p.user.profile_picture).toString("base64");
-          base64ProfilePicture = `data:image/png;base64,${base64}`;
-        }
-        return {
-          ...p,
-          user: {
-            ...p.user,
-            profile_picture: base64ProfilePicture,
-          },
-        };
-      }),
+  ...chat,
+  participants: chat.participants.map((p) => {
+    let base64ProfilePicture = null;
+    if (p.user.profile_picture) {
+      const base64 = Buffer.from(p.user.profile_picture).toString("base64");
+      base64ProfilePicture = `data:image/png;base64,${base64}`;
+    }
+    return {
+      ...p,
+      user: {
+        ...p.user,
+        profile_picture: base64ProfilePicture,
+      },
     };
+  }),
+  messages: chat.messages.map((m) => ({
+    ...m,
+    messageAttachments: m.messageAttachments.map((a) => ({
+      ...a,
+      // convert binary to base64 string
+      file_data: a.file_data
+        ? Buffer.from(a.file_data).toString("base64")
+        : null,
+    })),
+  })),
+};
 
     // broadcast updated chat to chat page
     io.to(chatId).emit("chat:message", chatUpdated);

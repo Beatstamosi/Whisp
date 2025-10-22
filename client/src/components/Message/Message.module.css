@@ -34,3 +34,48 @@
   font-style: italic;
   font-weight: 200;
 }
+
+.fileAttachment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.fileName {
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.downloadButton {
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sender .downloadButton {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.sender .downloadButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.recipient .downloadButton {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.recipient .downloadButton:hover {
+  background-color: var(--color-primary-dark);
+}
