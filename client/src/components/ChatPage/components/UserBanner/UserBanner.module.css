@@ -1,0 +1,38 @@
+.userBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--color-primary);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  color: white;
+}
+
+.userBanner:hover {
+  background-color: var(--color-bg-alt);
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-bg-alt);
+}
+
+.userName {
+  font-weight: bold;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.lastOnline {
+  font-size: 0.85em;
+}

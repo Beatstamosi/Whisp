@@ -1,0 +1,48 @@
+.messageContainer {
+  padding: 20px;
+  height: calc(100vh - 250px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: var(--color-bg);
+}
+
+.messageWrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 70%;
+}
+
+.senderWrapper {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.recipientWrapper {
+  margin-right: auto;
+  justify-content: flex-start;
+}
+
+.messageAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.noMessages {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 32px;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .messageContainer {
+    padding: 20px;
+    height: calc(100vh - 180px);
+  }
+}
