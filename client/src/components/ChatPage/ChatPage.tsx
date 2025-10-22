@@ -16,6 +16,7 @@ function ChatPage() {
   const { chatId } = useParams();
   const [chat, setChat] = useState<Chat | null>(null);
   const [message, setMessage] = useState("");
+  const [file, setFile] = useState<File | null>();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
@@ -120,6 +121,13 @@ function ChatPage() {
     e.preventDefault();
 
     try {
+      const formData = new FormData();
+      if (file) {
+        formData.append("file", file);
+      }
+
+      formData.append("content", message);
+
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/chats/${chatId}/message`,
         {
@@ -129,13 +137,13 @@ function ChatPage() {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           credentials: "include",
-          body: JSON.stringify({ content: message }),
+          body: formData,
         }
       );
 
-      // PLACEHOLDER UNTIL WEBSOCKET IS IMPLEMENTED
       if (res.ok) {
         setMessage("");
+        setFile(null);
       }
     } catch (err) {
       console.error("Error sending message: ", err);
@@ -231,6 +239,34 @@ function ChatPage() {
 
       {/* Message Input Area */}
       <div className={style.inputContainer}>
+        <div className={style.fileInputWrapper}>
+          <input
+            type="file"
+            id="file-upload"
+            className={style.fileInput}
+            onChange={async (e) => {
+              const uploadedFile = e.target.files?.[0];
+              if (!uploadedFile) return;
+              setFile(uploadedFile);
+            }}
+          />
+          <label htmlFor="file-upload" className={style.fileInputLabel}>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19.5 9h-3V3h-9v6h-3L12 16.5L19.5 9zm-6 0V6h3v3h-3z"
+                fill="currentColor"
+              />
+              <path d="M5 19v2h14v-2H5z" fill="currentColor" />
+            </svg>
+            {file && <span className={style.fileName}>{file.name}</span>}
+          </label>
+        </div>
         <div className={style.emojiPickerWrapper}>
           <button
             ref={emojiButtonRef}
