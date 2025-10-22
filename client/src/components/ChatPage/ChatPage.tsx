@@ -133,7 +133,6 @@ function ChatPage() {
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           credentials: "include",
@@ -247,7 +246,11 @@ function ChatPage() {
             onChange={async (e) => {
               const uploadedFile = e.target.files?.[0];
               if (!uploadedFile) return;
+
               setFile(uploadedFile);
+              if (!message) {
+                setMessage(uploadedFile.name);
+              }
             }}
           />
           <label htmlFor="file-upload" className={style.fileInputLabel}>
