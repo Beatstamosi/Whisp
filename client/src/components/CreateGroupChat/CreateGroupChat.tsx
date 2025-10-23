@@ -141,7 +141,7 @@ function CreateGroupChat() {
                       {user.firstname} {user.lastname}
                     </h2>
                     {user.bio && (
-                      <p className={style.messageContent}>{user.bio}</p>
+                      <p className={style.bioContent}>{user.bio}</p>
                     )}
                   </div>
                   <input
