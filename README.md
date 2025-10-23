@@ -2,7 +2,7 @@
 
 **Whisp** is a full-stack real-time messaging application built with **Express**, **React**, **Prisma**, and **PostgreSQL**. It allows users to communicate seamlessly — whether through direct messages, group chats, or file sharing — all in an elegant, responsive interface.
 
-> A project inspired by [The Odin Project’s Node.js Messaging App](https://www.theodinproject.com/lessons/nodejs-messaging-app).
+[LIVE DEMO](https://whisp-front-end-production.up.railway.app/login).
 
 ---
 
