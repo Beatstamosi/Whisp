@@ -33,8 +33,9 @@ function CreateGroupChat() {
 
         const data = await res.json();
 
+        // delete creator of chat from available users
         if (res.ok) {
-          setUsers(data.users);
+          setUsers(data.users.filter((user: User) => user.id !== userId));
         }
       } catch (err) {
         console.error(err);
@@ -43,7 +44,7 @@ function CreateGroupChat() {
     fetchUsers();
   }, []);
 
-  // Initiate displayUsers with all Users from DB
+  // Initiate displayUsers
   useEffect(() => {
     const usersWithOuthOP = users?.filter((user) => user.id !== userId);
     setDisplayUsers(usersWithOuthOP);
@@ -140,9 +141,7 @@ function CreateGroupChat() {
                     <h2>
                       {user.firstname} {user.lastname}
                     </h2>
-                    {user.bio && (
-                      <p className={style.bioContent}>{user.bio}</p>
-                    )}
+                    {user.bio && <p className={style.bioContent}>{user.bio}</p>}
                   </div>
                   <input
                     type="checkbox"
