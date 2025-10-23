@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import passport from "passport";
+import "./config/passport.js";
 import http from "http";
 import fs from "fs";
 
@@ -50,6 +51,7 @@ if (process.env.NODE_ENV === "production") {
     })
   );
 }
+app.options("*", cors());
 
 // Routes
 app.use("/auth", authRouter);
