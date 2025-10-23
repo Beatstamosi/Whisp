@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "create-tables": "node --loader ts-node/esm src/db/createTables.ts",
-    "prebuild": "cd ../client && npm ci && npm run build",
+    "prebuild": "cd ../client && npm run build",
     "postinstall": "npx prisma generate",
     "start:migrate": "npx prisma migrate deploy && npm run start"
   },
