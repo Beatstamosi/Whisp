@@ -19,6 +19,21 @@ dotenv.config();
 
 const app = express();
 
+// Handle preflight for ALL routes
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      req.headers["access-control-request-headers"] || "*"
+    );
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// CORS
 app.use(
   cors({
     origin: [
