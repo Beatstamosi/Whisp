@@ -1,0 +1,82 @@
+export const dummyChat = {
+    id: "chat-123",
+    created_at: "2025-10-06T09:00:00.000Z",
+    is_group: false,
+    name: null,
+    participants: [
+        {
+            id: "part-1",
+            chatId: "chat-123",
+            userId: "user-1",
+            joined_at: "2025-10-06T09:00:00.000Z",
+            user: {
+                id: "user-1",
+                firstname: "Alice",
+                lastname: "Doe",
+                email: "alice@example.com",
+                bio: "Lover of technology and coffee ☕",
+                profile_picture: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAA...",
+                signed_up_at: "2025-09-20T14:00:00.000Z",
+                last_seen_at: "2025-10-06T09:30:00.000Z",
+            },
+        },
+        {
+            id: "part-2",
+            chatId: "chat-123",
+            userId: "user-2",
+            joined_at: "2025-10-06T09:00:00.000Z",
+            user: {
+                id: "3e54abd8-2603-49e3-aaa5-89199ec967dc",
+                firstname: "Bob",
+                lastname: "Smith",
+                email: "bob@example.com",
+                bio: "Just here for a good chat 😄",
+                profile_picture: null,
+                signed_up_at: "2025-09-22T16:00:00.000Z",
+                last_seen_at: "2025-10-06T09:35:00.000Z",
+            },
+        },
+    ],
+    messages: [
+        {
+            id: "msg-1",
+            chatId: "chat-123",
+            senderId: "user-1",
+            content: "Hey Bob! How’s it going?",
+            sent_at: "2025-10-06T09:05:00.000Z",
+            sender: {
+                id: "user-1",
+                firstname: "Alice",
+                lastname: "Doe",
+            },
+            messageRead: [
+                {
+                    id: "read-1",
+                    messageId: "msg-1",
+                    userId: "3e54abd8-2603-49e3-aaa5-89199ec967dc",
+                    read_at: "2025-10-06T09:06:30.000Z",
+                    user: {
+                        id: "3e54abd8-2603-49e3-aaa5-89199ec967dc",
+                        firstname: "Bob",
+                        lastname: "Smith",
+                    },
+                },
+            ],
+            messageAttachments: [],
+        },
+        {
+            id: "msg-2",
+            chatId: "chat-123",
+            senderId: "3e54abd8-2603-49e3-aaa5-89199ec967dc",
+            content: "Hey Alice! All good here. Just testing the chat 😄",
+            sent_at: "2025-10-06T09:06:00.000Z",
+            sender: {
+                id: "3e54abd8-2603-49e3-aaa5-89199ec967dc",
+                firstname: "Bob",
+                lastname: "Smith",
+            },
+            messageRead: [],
+            messageAttachments: [],
+        },
+    ],
+};
