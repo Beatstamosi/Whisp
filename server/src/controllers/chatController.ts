@@ -14,9 +14,17 @@ const getAllChats = async (req: Request, res: Response) => {
         participants: {
           some: { userId },
         },
-        messages: {
-          some: {},
-        },
+        OR: [
+          {
+            is_group: true, // allow empty messages if group
+          },
+          {
+            AND: [
+              { is_group: false },
+              { messages: { some: {} } }, // only include 1:1 chats that have messages
+            ],
+          },
+        ],
       },
       include: {
         participants: {
@@ -304,32 +312,32 @@ const addMessage = async (req: Request, res: Response) => {
 
     // Convert profile pictures and files to base64 for all participants
     const chatUpdated = {
-  ...chat,
-  participants: chat.participants.map((p) => {
-    let base64ProfilePicture = null;
-    if (p.user.profile_picture) {
-      const base64 = Buffer.from(p.user.profile_picture).toString("base64");
-      base64ProfilePicture = `data:image/png;base64,${base64}`;
-    }
-    return {
-      ...p,
-      user: {
-        ...p.user,
-        profile_picture: base64ProfilePicture,
-      },
+      ...chat,
+      participants: chat.participants.map((p) => {
+        let base64ProfilePicture = null;
+        if (p.user.profile_picture) {
+          const base64 = Buffer.from(p.user.profile_picture).toString("base64");
+          base64ProfilePicture = `data:image/png;base64,${base64}`;
+        }
+        return {
+          ...p,
+          user: {
+            ...p.user,
+            profile_picture: base64ProfilePicture,
+          },
+        };
+      }),
+      messages: chat.messages.map((m) => ({
+        ...m,
+        messageAttachments: m.messageAttachments.map((a) => ({
+          ...a,
+          // convert binary to base64 string
+          file_data: a.file_data
+            ? Buffer.from(a.file_data).toString("base64")
+            : null,
+        })),
+      })),
     };
-  }),
-  messages: chat.messages.map((m) => ({
-    ...m,
-    messageAttachments: m.messageAttachments.map((a) => ({
-      ...a,
-      // convert binary to base64 string
-      file_data: a.file_data
-        ? Buffer.from(a.file_data).toString("base64")
-        : null,
-    })),
-  })),
-};
 
     // broadcast updated chat to chat page
     io.to(chatId).emit("chat:message", chatUpdated);

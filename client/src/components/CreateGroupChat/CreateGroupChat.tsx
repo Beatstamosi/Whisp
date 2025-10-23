@@ -42,7 +42,7 @@ function CreateGroupChat() {
       }
     };
     fetchUsers();
-  }, []);
+  }, [userId]);
 
   // Initiate displayUsers
   useEffect(() => {
