@@ -11,7 +11,7 @@ const updateUser = async (req: Request, res: Response) => {
       where: { id: req.user?.id },
       data: {
         bio,
-        profile_picture: file ? file.buffer : undefined,
+        profile_picture: file ? Buffer.from(file.buffer) : undefined,
       },
     });
 

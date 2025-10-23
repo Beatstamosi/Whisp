@@ -3,6 +3,70 @@ import prisma from "../lib/prisma.js";
 import handleError from "../services/handleError.js";
 import { getIO } from "../socket.js";
 
+import type { Prisma } from "@prisma/client";
+
+type ChatParticipantWithUser = Prisma.ChatParticipantsGetPayload<{
+  include: {
+    user: {
+      select: {
+        id: true;
+        firstname: true;
+        lastname: true;
+        profile_picture: true;
+        last_seen_at: true;
+      };
+    };
+  };
+}>;
+
+type MessagesWithAttachments = Prisma.MessagesGetPayload<{
+  include: {
+    messageAttachments: true;
+  };
+}>;
+
+type ChatWithRelations = Prisma.ChatsGetPayload<{
+  include: {
+    participants: {
+      include: {
+        user: {
+          select: {
+            id: true;
+            firstname: true;
+            lastname: true;
+            profile_picture: true;
+            last_seen_at: true;
+          };
+        };
+      };
+    };
+    messages: {
+      orderBy: { sent_at: "asc" };
+      include: {
+        sender: {
+          select: {
+            id: true;
+            firstname: true;
+            lastname: true;
+          };
+        };
+        messageRead: {
+          include: {
+            user: {
+              select: {
+                id: true;
+                firstname: true;
+                lastname: true;
+              };
+            };
+          };
+        };
+        messageAttachments: true;
+      };
+    };
+  };
+}>;
+
 const getAllChats = async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
@@ -218,7 +282,6 @@ const getSingleChat = async (req: Request, res: Response) => {
         ...m,
         messageAttachments: m.messageAttachments.map((a) => ({
           ...a,
-          // convert binary to base64 string
           file_data: a.file_data
             ? Buffer.from(a.file_data).toString("base64")
             : null,
@@ -260,7 +323,7 @@ const addMessage = async (req: Request, res: Response) => {
                   create: {
                     file_name: file.originalname,
                     file_type: file.mimetype,
-                    file_data: file.buffer,
+                    file_data: Buffer.from(file.buffer),
                   },
                 }
               : undefined,
@@ -313,7 +376,7 @@ const addMessage = async (req: Request, res: Response) => {
     // Convert profile pictures and files to base64 for all participants
     const chatUpdated = {
       ...chat,
-      participants: chat.participants.map((p) => {
+      participants: chat.participants.map((p: ChatParticipantWithUser) => {
         let base64ProfilePicture = null;
         if (p.user.profile_picture) {
           const base64 = Buffer.from(p.user.profile_picture).toString("base64");
@@ -331,7 +394,6 @@ const addMessage = async (req: Request, res: Response) => {
         ...m,
         messageAttachments: m.messageAttachments.map((a) => ({
           ...a,
-          // convert binary to base64 string
           file_data: a.file_data
             ? Buffer.from(a.file_data).toString("base64")
             : null,
