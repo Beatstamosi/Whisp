@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import passport from "passport";
 import http from "http";
+import fs from "fs";
 
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/user.js";
@@ -48,11 +49,16 @@ app.use("/messages", messageRouter);
 // Serve static files in production
 if (process.env.NODE_ENV === "production") {
   const clientDistPath = path.resolve(__dirname, "../../client/dist");
-  app.use(express.static(clientDistPath));
 
-  app.get("*", (_, res) => {
-    res.sendFile(path.join(clientDistPath, "index.html"));
-  });
+  if (fs.existsSync(clientDistPath)) {
+    app.use(express.static(clientDistPath));
+
+    app.get("*", (_, res) => {
+      res.sendFile(path.join(clientDistPath, "index.html"));
+    });
+  } else {
+    console.warn("⚠️ client/dist not found, skipping static serve");
+  }
 }
 
 // Start server
