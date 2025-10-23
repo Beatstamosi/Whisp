@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import useLogOut from "../Authentication/LogOut/LogOut";
-import styles from "./DropdownMenu.module.css";
+import styles from "./DropDownMenu.module.css";
 import { useNavigate } from "react-router-dom";
 
 export default function DropdownMenu({ userId }: { userId: string }) {
