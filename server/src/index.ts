@@ -14,7 +14,7 @@ import chatRouter from "./routes/chats.js";
 import messageRouter from "./routes/messages.js";
 import { initializeSocket } from "./socket.js";
 
-// Load environment variables
+// Load environment variables FIRST
 dotenv.config();
 
 const app = express();
@@ -24,10 +24,14 @@ const allowedOrigins = [
   "http://localhost:5173",
 ];
 
+// CORS must be configured BEFORE other middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -39,9 +43,6 @@ app.use(
   })
 );
 
-// For preflight requests (OPTIONS)
-app.options("*", cors());
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -49,7 +50,7 @@ const __dirname = path.dirname(__filename);
 const server = http.createServer(app);
 initializeSocket(server);
 
-// Middleware
+// Middleware (AFTER CORS)
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(passport.initialize());

@@ -32,6 +32,11 @@ let io: Server<
  * Initializes the Socket.IO server and attaches it to HTTP server.
  */
 export function initializeSocket(server: http.Server) {
+  const allowedOrigins = [
+    "https://whisp-front-end-production.up.railway.app",
+    "http://localhost:5173",
+  ];
+
   io = new Server<
     ClientToServerEvents,
     ServerToClientEvents,
@@ -39,7 +44,7 @@ export function initializeSocket(server: http.Server) {
     SocketData
   >(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: allowedOrigins,
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     },
