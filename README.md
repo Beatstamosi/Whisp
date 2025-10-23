@@ -21,7 +21,7 @@
 
 | Layer            | Technology                                     |
 | ---------------- | ---------------------------------------------- |
-| **Frontend**     | React (Vite or CRA), TailwindCSS (optional)    |
+| **Frontend**     | React (Vite), TailwindCSS (optional)           |
 | **Backend**      | Node.js, Express                               |
 | **Database**     | PostgreSQL with Prisma ORM                     |
 | **Auth**         | Express sessions / JWT (depending on setup)    |

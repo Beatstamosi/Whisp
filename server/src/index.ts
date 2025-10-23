@@ -4,32 +4,31 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import passport from "passport";
+import http from "http";
+
 import authRouter from "./routes/auth.js";
-import "./config/passport.js";
 import userRouter from "./routes/user.js";
 import chatRouter from "./routes/chats.js";
 import messageRouter from "./routes/messages.js";
-import http from "http";
 import { initializeSocket } from "./socket.js";
 
-// Give access to environment variables
+// Load environment variables
 dotenv.config();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Set up websocket connection
+// Create HTTP server for WebSocket
 const server = http.createServer(app);
 initializeSocket(server);
 
+// Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// Initialize Passport
 app.use(passport.initialize());
 
-// Enable CORS only in dev
+// Enable CORS only during development
 if (process.env.NODE_ENV === "development") {
   app.use(
     cors({
@@ -48,13 +47,16 @@ app.use("/messages", messageRouter);
 
 // Serve static files in production
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/dist")));
+  const clientDistPath = path.resolve(__dirname, "../../client/dist");
+  app.use(express.static(clientDistPath));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+  app.get("*", (_, res) => {
+    res.sendFile(path.join(clientDistPath, "index.html"));
   });
 }
 
+// Start server
 const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
