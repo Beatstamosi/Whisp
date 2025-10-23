@@ -18,6 +18,20 @@ import { initializeSocket } from "./socket.js";
 dotenv.config();
 
 const app = express();
+
+app.use(
+  cors({
+    origin: [
+      "https://whisp-front-end-production.up.railway.app",
+      "http://localhost:5173", // helpful for local dev too
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+app.options("*", cors());
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -29,29 +43,6 @@ initializeSocket(server);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(passport.initialize());
-
-// Enable CORS during development
-if (process.env.NODE_ENV === "development") {
-  app.use(
-    cors({
-      origin: "http://localhost:5173",
-      credentials: true,
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    })
-  );
-}
-
-if (process.env.NODE_ENV === "production") {
-  app.use(
-    cors({
-      origin: ["https://whisp-front-end-production.up.railway.app"],
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
-      credentials: true,
-    })
-  );
-}
-app.options("*", cors());
 
 // Routes
 app.use("/auth", authRouter);
