@@ -19,32 +19,27 @@ dotenv.config();
 
 const app = express();
 
-// Handle preflight for ALL routes
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      req.headers["access-control-request-headers"] || "*"
-    );
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    return res.sendStatus(200);
-  }
-  next();
-});
+const allowedOrigins = [
+  "https://whisp-front-end-production.up.railway.app",
+  "http://localhost:5173",
+];
 
-// CORS
 app.use(
   cors({
-    origin: [
-      "https://whisp-front-end-production.up.railway.app",
-      "http://localhost:5173", // helpful for local dev too
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// For preflight requests (OPTIONS)
 app.options("*", cors());
 
 const __filename = fileURLToPath(import.meta.url);
